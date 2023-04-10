@@ -380,3 +380,183 @@ DUDAS
     // Pasar el id y que me encuentre el prod. Usar FIND
 // }
 
+// CLASE 4
+// Construccion de prototipo.
+    /*
+    Array.prototype.logicaDelMap = function (callback){
+        let nuevoArray = []
+        for (let i=0; i<this.length; i++){ //Como no tengo array de referencia pongo this, porque es del prototipo
+            let nuevoValor = callback(this[i])
+            nuevoArray.push(nuevoValor)
+        }
+        return nuevoArray
+    }
+
+    const miArray = [1,2,3,4,5]
+    const multiplicarPorDos = valor=> valor*2 
+    console.log(miArray.logicaDelMap(multiplicarPorDos))
+    
+        Sobre la funcion anonima y el uso de this
+        Es decir, podemos declarar funciones anónimas en JavaScript con arrow function, un modo de escritura que siempre es anónimo:
+
+        ( ) => { }
+
+        O con la palabra clave function:
+
+        function ( ) { }
+
+        Como mencionamos antes, estas dos maneras de escribir funciones anónimas en JavaScript implican dos aproximaciones diferentes al entendimiento de this.
+
+        En la función anónima de tipo arrow function, la palabra clave this toma el valor del scope superior. Por su parte, en la función anónima de tipo function, el valor pertenece a quien ejecuta esta función. Por esto es muy importante reconocer las distintas maneras de escribir funciones anónimas en JavaScript, pues tu código puede tener resultados muy diferentes según como determines la función.
+    */        
+// CALLBACKS
+    // CONVENVIONES:
+    
+        
+        // • Se pasa como ultimo parametro en la funcion
+        // •Suele recibir dos parametros
+        // •La funcion debe llamar al callback al terminar de ejecutar todas sus operaciones (?)
+        // •Un callback puede fallar, entonces se toman en cuenta dos posibles casos: cuando falla de manera interna, o si se resuelve de manera correcta
+        //  EJ: 
+            /*
+            const callbackAvanzado = (error, valor)=>{
+                if(error){
+                    // Controlar el error
+                }
+                if(valor){
+                    // Salio todo bien
+                    return valor
+                }
+            }
+            // Siempre se usan dos parametros para que te devuelva y poder usar por fuera
+            //  Si algo sale mal te arroja un error,
+        */
+    // ANIDACION Y PROBLEMAS. 37:31 DEL ZOOM
+
+
+/*
+CLASE 5: MANEJO DE ARCHIVOS
+FS (file system)=> es un modulo que cuando instalas node se te instala que es para el manejo de archivos y conectar
+ 
+COSAS A INVESTIGAR:
+UTF-8 Y DISTINTOS TIPOS DE CODIFICACION
+DISTINTOS TIPO DE FS.WRITE. Que tipo de dato es?
+
+
+
+const fs = require ('fs')  //Que se necesite el modulo interno FS
+
+
+// FS SÍNCRONO
+    fs.writeFileSync('./apunte/rutaDelArchivo.txt', "Con esta funcion creo un archivo que diga esto en el path que mencioné anteriormente.")
+        // Se pueden investigar los otros tipos de .write()
+        //  /. => Esto es path relativo: te va a crear desde el arranque del proyecto
+        //Si yo lo ejecuto se crea un archivo. Si lo ejecuto y el archivo ya existe pisas el contenido. Existen métodos mas eficientes.
+        //Sirve para visualizacion rápida de cosas, o guardado simple de datos (?)
+
+    fs.appendFileSync('./apunte/rutaDelArchivo.txt', "\nEsto es el append de texto al archivo txt que cree")
+
+    //Solo puedo escribir strings ya que un archivo en el fondo es un archivo de texto. No puedo guardar un objeto, o un array.
+
+    //Guardar otro tipo de datos.
+
+        const productos = [
+            {
+                precio: 1500,
+                stock: 2
+            }
+        ]
+        fs.writeFileSync('./apunte/productos.json', JSON.stringify(productos))//Creo un JSON en formato string
+
+    // Ahora a acceder y hacer lectura
+        const datosJSON = fs.readFileSync('./apunte/productos.json', 'utf-8') //UTF-8 es el codigo en el que leo el contenido de un archivo. INVESTIGAR
+        // console.log(datosJSON, typeof datosJSON) //En este console log el typeof es string
+
+        const datosJSONParseo = JSON.parse(datosJSON)
+        // console.log(datosJSONParseo, typeof datosJSONParseo) //Ahora si tengo el objeto en typeof object
+
+    //Eliminar
+        fs.unlinkSync('./apunte/productos.json')
+        fs.unlinkSync('./apunte/rutaDelArchivo.txt')
+
+    //Existe un archivo?
+        console.log(fs.existsSync('./apunte/productos.json')) //Devuelve false. Ya que los eliminé
+
+
+// FS CON CALLBACKS
+    //Escribir un archivo
+        //Tengo que pasar: ruta, contenido, callback
+    fs.writeFile('./productoCallback.json', JSON.stringify(productos), (error)=>{
+        if (error){
+            console.log(error)
+            return //es una forma de break
+        }
+        console.log("Archivo creado con exito")
+    })
+    //Leer
+        fs.readFile('./productoCallback.json', 'utf-8', (error, content)=>{
+            if(error){
+                console.log(error)
+            }
+            // PROBLEMA !!!
+            //Si quiero escribir el archivo entro en un callback hell porque necesito saber que esta ahi para poder escribirlo y despues guardar y despues leer. (Reveer la clase aca, no entendi porque se crear el ccallback hell)
+        })
+
+
+//ACTIVIDAD
+        //No se cual es la actividad pero estaba bueno que el profe cargaba datos a un archivo en este formato.
+    // const hoy = new Date()
+    // fs.writeFile('./desafio.txt', `Fecha: ${hoy}`, (error)=>{//BACK TICS => ALT GR + cierre corchete("}")
+    //     if (error){
+    //         console.log(error)
+    //         return
+    //     }
+    //     fs.readFile('./desafio.txt', 'utf-8', (error, content)=>{
+    //         if (error){
+    //             console.log(error)
+    //             return
+    //         }
+    //         console.log(content)
+    //     })
+    // }) 
+
+
+//FS CON PROMESAS
+    //El require ya no se usa,
+    //Aca va otra forma de import: 
+    //Vamos a la terminal: NPM init -y (-y = yes a todas las opciones). SI no hay un index.js va a tomar el primer archivo que encuentre como entrypoint
+    //Esto crea un paquete: osea estas indicando que estas trabajando sobre un proyecto.
+    //Tambien NPM init. Te hace unas preguntas sobre la creacion del paquete
+    // Despues de crear un paquete hay que agregar en el package.json: "type": "module"
+    //Para importarlo se usa asi:
+    // import fs from 'fs'
+
+// ACTIVIDAD 2
+
+// Hands on lab
+
+*/
+
+
+
+
+
+
+/*
+CLASE 6(?)
+// Actividad de clase
+// Crear un proyecto que genere 10000 numeros aleatorios de 1 a 20. Crear keys con el numero. Y el valor va a ser la cantidad de veces que salio
+NO CORRER ESTE CODIGO=>
+
+const randomSet = {
+}
+for (let i = 0; 0<10000; i++){
+    let number = Math.floor(Math.random()*20+1) //Se pone el +1 porque es el minimo.
+    if (!randomSet[number]){
+        randomSet[number] = 1
+    }else{
+        randomSet[number]++
+    }   
+}
+*/
+
