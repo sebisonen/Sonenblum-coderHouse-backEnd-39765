@@ -17,7 +17,7 @@ CLASE 3:
     2)  
 
 */
-// Clase 1 NIVELACION
+// Clase 0 NIVELACION
 /*
 const texto= (text)=>{
     console.log(text)
@@ -36,7 +36,7 @@ Booleanos: True es equivalente a 1 y False es equivalente a 0, por lo cual si ha
 
 */
 
-// Clase 2 PRINCIPIOS BASICOS JS
+// Clase 1 PRINCIPIOS BASICOS JS
 /*
 Variable = Espacio de memoria apartado por la computadora para pdoer guardar un dato.
 Var tenia scope global. Y si habia archivos distintos con una variable con el mismo nombre crasheaba todo. De ahi que aparecio let y const.
@@ -188,7 +188,7 @@ CLASES
 */
 
 /*
-CLASE 3 NUEVAS FUNCIONALIDADES ECMA SCRIPT
+CLASE 2 NUEVAS FUNCIONALIDADES ECMA SCRIPT
 // EXPONENCIAL: **
 
     let valoresBase = [1,2,3,4,5,6];
@@ -336,7 +336,7 @@ console.log(nuevoArray)
 */
 
 /*
-CLASE 4: PROGRAMACION SINCRONICA Y ASINCRONICA
+CLASE 3: PROGRAMACION SINCRONICA Y ASINCRONICA
     Callbacks
         
     Promesas

@@ -1,0 +1,23 @@
+{
+  "name": "ecommerce-backend-sonenblum",
+  "version": "1.0.0",
+  "description": "e-commerce for backEnd course at coderHouse",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sebisonen/coderHouse-backEnd-Sonenblum.git"
+  },
+  "author": "Sebastian Sonenblum",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sebisonen/coderHouse-backEnd-Sonenblum/issues"
+  },
+  "homepage": "https://github.com/sebisonen/coderHouse-backEnd-Sonenblum#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

@@ -1,5 +1,6 @@
-const fs = require('fs');
-class ProductManager {
+import fs from 'fs';
+
+export default class ProductManager {
     constructor(path){
         this.path = path
         this.products =[]
@@ -33,7 +34,7 @@ class ProductManager {
                 throw new Error(errorMessage)
             }else{//Si las validaciones están bien lo agrego a products y lo escribo en el file    
                 this.products.push(product)
-                await fs.promises.writeFile(this.path, JSON.stringify(products, null, 1))
+                await fs.promises.writeFile(this.path, JSON.stringify(products, null, "\t"))
                 console.log("Product added successfully")
             }
         }catch (error) {
@@ -85,40 +86,3 @@ class ProductManager {
         }
     }   
 }
-
-
-const tester = async() =>{
-    // CREO UNA INSTANCIA DE LA CLASE
-    const productManager = new ProductManager('./entregables/files/products.json')
-    
-    //  LLAMO A getProducts()
-    console.log("1", await productManager.getProducts())
-
-    // LLAMO A addProduct()
-    await productManager.addProduct({
-        title: "producto prueba",
-        description: "Este es un producto prueba",
-        price:200,
-        thumbnail:"Sin imagen",
-        code: "abc123",
-        stock: 25
-    }) // Product added successfully
-        
-    //  VUELVO A LLAMAR A getProducts()
-    console.log("2", await productManager.getProducts())
-
-    //  LLAMO A getProductById()
-    console.log("3", await productManager.getProductById(1))
-    
-    //  LLAMO A updateProduct()
-    await productManager.updateProduct(1, {stock:24}) //Pruebo modificar un campo al azar
-        // Product 1 has been modified successfully
-    await productManager.updateProduct(1, {id:24}) //Pruebo modificar el ID
-        //Error: ID cannot be changed
-    console.log("4", await productManager.getProducts()) // Muestro el array con sus modificaciones
-    
-    // LLAMO A deleteProduct()
-    await productManager.deleteProduct(1)
-    console.log("5", await productManager.getProducts())
-}
-tester()
