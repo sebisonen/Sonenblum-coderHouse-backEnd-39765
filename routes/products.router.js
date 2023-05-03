@@ -32,6 +32,8 @@ router.get('/:pid',async (req, res)=>{
 router.post("/", async (req, res) => { 
   const product= req.body ;
   const adding = await productManager.addProduct(product)
+  const products = await productManager.getProducts()
+  req.io.emit('products', products)
   adding.error?
   res.status(400).send({status:"error", message: adding.message}):
   res.status(200).send({status:"success", message: adding.message})
@@ -49,6 +51,8 @@ router.put("/:pid", async (req, res) =>{
 router.delete("/:pid", async (req, res) =>{
   const id=Number(req.params.pid)
   const deleted= await productManager.deleteProduct(id)
+  const products = await productManager.getProducts()
+  req.io.emit('products', products)
   deleted.error?
   res.status(400).send({status:"error", message: deleted.message}):
   res.status(200).send({status:"success", message: deleted.message})

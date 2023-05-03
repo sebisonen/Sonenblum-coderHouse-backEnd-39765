@@ -12,7 +12,4 @@ router.get('/realTimeProducts', async (req,res)=>{
     const products = await productManager.getProducts()
     res.render('realTimeProducts', {products, css:'realTimeProducts'})
 })
-router.post('realTimeProducts',(req,res)=>{
-
-})
 export default router
