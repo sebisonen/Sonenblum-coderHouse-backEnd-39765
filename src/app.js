@@ -13,7 +13,7 @@ import mongoose from 'mongoose'
     const io = new Server(server)
 
 // DB
-    mongoose.connect('mongodb+srv://sebisonenblum:apalapapa123@clusterdemosonen.yyxyxlr.mongodb.net/ecommerce?retryWrites=true&w=majority')
+    mongoose.connect('')
 
 // CONFIG
     // Handlebars
