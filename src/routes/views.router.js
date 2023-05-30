@@ -6,7 +6,13 @@ import productsModel from "../models/products.model.js"
 const router = Router()
 const productManager = new ProductManager()
 const cartsManager = new CartsManager()
-
+router.get('/', (req,res)=>{
+    try {
+        res.render('home', {css:'home'})
+    } catch (error) {
+        res.render('error', {css:'error'})
+    }
+})
 router.get('/products', async (req,res) =>{
     try {
         const{page=1, limit=10, sort,...queries}=req.query
@@ -27,7 +33,7 @@ router.get('/products', async (req,res) =>{
         // console.log(rest.totalPages)
         rest.totalDocs==0||page>rest.totalPages?
         res.render('error', {css: 'error'}):
-        res.render('home', {products, queryUrl, page: rest.page, hasPrevPage, hasNextPage, prevPage,nextPage,limit, css:'home'})
+        res.render('products', {products, queryUrl, page: rest.page, hasPrevPage, hasNextPage, prevPage,nextPage,limit, css:'home'})
     } catch (error) {
         res.render('error')
     }

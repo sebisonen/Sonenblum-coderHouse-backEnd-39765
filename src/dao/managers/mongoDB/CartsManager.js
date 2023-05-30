@@ -6,12 +6,12 @@ export default class CartsManager{
     getCartById = (id) => cartsModel.findById(id).populate('products.product').lean()
     createCart = (cart) => cartsModel.create(cart)
     addToCart = (cartId, productId)=> cartsModel.updateOne({_id: cartId},{$push: {products:{product: productId, quantity: 1}}})
+    // New methods
     isProductInCart= async (cartId,productId)=>{
         let cart= await this.getCartById(cartId)
         let isInCart = cart.products.some((el)=>el.product._id.toHexString()===productId)
         return isInCart
     }
-    // New methods
     deleteCart = (cartId) => cartsModel.findByIdAndDelete(cartId)
     deleteFromCart =(cartId, productId)=> cartsModel.updateOne({_id: cartId},{$pull: {products:{product: productId}}})
     modifyQuantity = (cartId, productId, quantity) => cartsModel.updateOne({_id:cartId,"products.product":productId},{$inc:{"products.$.quantity":quantity}})
