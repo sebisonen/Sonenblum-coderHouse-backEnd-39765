@@ -46,13 +46,15 @@ router.post('/:cid/products/:pid', async (req, res)=>{//Agrego un prod al cart
         // Variables: Id´s, cart, y bool
         const cartId = String(req.params.cid)
         const productId = String(req.params.pid)
-        const cart = await cartsManager.getCartById(cartId)
         const wasInCart = await cartsManager.isProductInCart(cartId, productId)
-
+        // Operations
         wasInCart?
             await cartsManager.modifyQuantity(cartId, productId, 1):
             await cartsManager.addToCart(cartId, productId)
-    
+
+        // RES data
+        const cart = await cartsManager.getCartById(cartId)
+
         res.status(200).send({status: "Success", message: wasInCart?"One more product was added":"Added to cart", cart}) 
     } catch (error) {
         res.status(500).send({status: "error", message: "Server error. Get in touch with the developer.", error: error})
@@ -61,13 +63,42 @@ router.post('/:cid/products/:pid', async (req, res)=>{//Agrego un prod al cart
 })
 router.put('/:cid/products/:pid',async (req, res)=>{//Modifico la cantidad de un producto dentro del cart
     try {
+        // REQ data
+        const quantityToSum = req.body.quantity
         const cartId = String(req.params.cid)
         const productId = String(req.params.pid)
-        const cart = await cartsManager.getCartById(cartId)
-        const removed= await cartsManager.modifyQuantity(cartId, productId, 1)            
-        res.status(200).send({status: "Success", message: "One more product was added", cart, removed}) 
+        let cart = await cartsManager.getCartById(cartId)
+        let cartElement = cart.products.find(el=>el.product._id.toString()===productId)
+        
+        // Validation criteria
+        const moreThanStock = cartElement.quantity + quantityToSum > cartElement.product.stock
+        const lessThanZero= cartElement.quantity + quantityToSum <= 0
+        
+        // Operations
+        let modify
+        if(moreThanStock||lessThanZero){
+            const runOutOfStock = cartElement.product.stock-cartElement.quantity
+            moreThanStock?
+                // Agrego al cart, pero hasta llegar al valor del stock
+                modify= await cartsManager.modifyQuantity(cartId, productId, runOutOfStock):
+                // Borro el producto, no quiero tener nada con 0 quantity
+                modify= await cartsManager.deleteFromCart(cartId, productId)
+        }else{
+            // Modifico normalmente la cantidad
+            modify = await cartsManager.modifyQuantity(cartId, productId, quantityToSum)
+        }
+       
+        // RES data
+        let message
+        cart = await cartsManager.getCartById(cartId)
+        cartElement = cart.products.find(el=>el.product._id.toString()===productId)||0
+        cartElement==0?
+            message= "Product removed from cart":
+            message=`Product amount set to ${cartElement.quantity}`
+
+        res.status(200).send({status: "Success", message, cart, modify}) 
     } catch (error) {
-        res.status(500).send({status: "error", message: "Server error. Get in touch with the developer.", error: error})
+        res.status(500).send({status: "error", message: "Server error. Get in touch with the developer.", error})
     }
 })
 router.delete('/:cid', async (req,res)=>{
