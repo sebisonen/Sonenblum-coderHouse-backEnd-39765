@@ -1,0 +1,14 @@
+<div id={{cart._id}} >
+    <h1 style = "margin-left: 10%">Cart </h1>
+
+    {{#each products}}
+    <div id="{{this.product._id}}" style="margin: 10% 20%">
+        <div >{{this.product.title}}</div>
+        <div >${{this.product.price}}</div>
+        <div>Quantity: {{this.quantity}}</div>
+    </div>
+
+
+    {{/each}}
+    
+</div>
