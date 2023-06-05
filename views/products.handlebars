@@ -1,7 +1,13 @@
-   
+<h1>Products</h1>   
+{{#if user}}
+         <div>
+            <h2 style="color:whitesmoke">Hola, {{user.name}}</h2>
+            <p style="color:whitesmoke">Correo: {{user.email}}</p>
+         </div>
+           
+        {{/if}}
 <div id="productsCatalogue">
-    <h1>Products</h1>
-        
+    
     
     {{#each products}}
     

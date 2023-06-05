@@ -6,6 +6,10 @@ import viewsRouter from './routes/views.router.js'
 import { Server } from 'socket.io'
 import handlebars from 'express-handlebars';
 import mongoose from 'mongoose'
+
+import session from "express-session";
+import MongoStore from "connect-mongo";
+import sessionsRouter from  './routes/sessions.router.js'
  
 // Server
     const app = express()
@@ -13,7 +17,8 @@ import mongoose from 'mongoose'
     const io = new Server(server)
 
 // DB
-    mongoose.connect()
+    const connectionString=""
+    const connection=mongoose.connect(connectionString)
 
 // CONFIG
     // Handlebars
@@ -26,7 +31,16 @@ import mongoose from 'mongoose'
         app.use(express.urlencoded({extended:true}))
         // Public
         app.use(express.static(`${__dirname}/public`))
-
+    //Sessions
+    app.use(session({
+        store: new MongoStore({
+            mongoUrl: connectionString,
+            ttl:3600
+        }),
+        secret: "MiZekretou",
+        resave: false,
+        saveUninitialized:false
+    }))
     // Middlewares
         app.use((req,res,next)=>{
             req.io = io 
@@ -36,6 +50,7 @@ import mongoose from 'mongoose'
     // Routers
         app.use('/api/carts', cartsRouter)
         app.use('/api/products', productsRouter)
+        app.use('/api/sessions', sessionsRouter)
         app.use('/', viewsRouter)
 
     // Socket
