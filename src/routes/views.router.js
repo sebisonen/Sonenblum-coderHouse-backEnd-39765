@@ -2,14 +2,14 @@ import { Router } from "express";
 import ProductManager from "../dao/managers/mongoDB/ProductManager.js";
 import CartsManager from "../dao/managers/mongoDB/CartsManager.js";
 import productsModel from "../models/products.model.js"
-
+import { privacy } from "../middlewares/auth.js";
 const router = Router()
 const productManager = new ProductManager()
 const cartsManager = new CartsManager()
 
-router.get('/', (req,res)=>{
+router.get('/',privacy("NOT_AUTHENTICATED"), (req,res)=>{
     try {
-        res.render('home', {css:'home'})
+        res.render('login', {css:'login'})
     } catch (error) {
         res.render('error', {css:'error'})
     }
@@ -58,12 +58,13 @@ router.get('/carts/:cid', async (req,res)=>{
 })
 
 // Login system
-router.get('/register',(req,res)=>{
-    res.render('register')
+router.get('/register',privacy("NOT_AUTHENTICATED"),(req,res)=>{
+    res.render('register', {css:'register'})
 })
-router.get('/login', (req,res)=>{
-    res.render('login')
+router.get('/login',privacy("NOT_AUTHENTICATED"), (req,res)=>{
+    res.render('login', {css:'login'})
 })
+
 
 
 export default router

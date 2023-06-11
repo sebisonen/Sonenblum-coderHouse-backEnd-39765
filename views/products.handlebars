@@ -3,7 +3,11 @@
          <div>
             <h2 style="color:whitesmoke">Hola, {{user.name}}</h2>
             <p style="color:whitesmoke">Correo: {{user.email}}</p>
+            <p style="color:whitesmoke">Rol: {{user.role}}</p>
          </div>
+         <form action="/api/sessions/logout" method="post">
+            <button id="logout-btn" type="submit">LOGOUT</button>
+         </form>
            
         {{/if}}
 <div id="productsCatalogue">

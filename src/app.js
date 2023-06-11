@@ -17,7 +17,7 @@ import sessionsRouter from  './routes/sessions.router.js'
     const io = new Server(server)
 
 // DB
-    const connectionString=""
+    const connectionString=''
     const connection=mongoose.connect(connectionString)
 
 // CONFIG
