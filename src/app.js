@@ -18,7 +18,7 @@ import initializePassport from './config/passport.config.js'
     const io = new Server(server)
 
 // DB
-    const connectionString='mongodb+srv://sebisonenblum:Sebas1999Sonen@clusterdemosonen.yyxyxlr.mongodb.net/ecommerce?retryWrites=true&w=majority'
+    const connectionString=''
     const connection=mongoose.connect(connectionString)
 
 // CONFIG
