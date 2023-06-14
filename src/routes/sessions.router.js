@@ -1,47 +1,44 @@
 import { Router } from "express";
-import userModel from "../models/users.model.js"
+import passport from "passport";
 
 const router = Router()
 
-router.post('/register', async(req,res)=>{
+//Register
+router.post('/register',passport.authenticate('register', {failureRedirect: '/api/sessions/registerFail',failureMessage: true} ), async(req,res)=>{
     try {
-        const result = await userModel.create(req.body)//Suponiendo que está todo bien, sin validar nada
-    res.status(200).send({status:"success", payload: result})
+       res.status(200).send({status:"success", message: "Registered"}) 
     } catch (error) {
-        res.status(500).send({status:"error", error: error, message: "server error"})
+        console.log(error)
     }
     
 })
+router.get('/registerFail', (req, res)=>{
+    console.log(req.session.messages)
+    res.status(400).send({status:"error", error: "Couldn't register"})
 
-router.post('/login', async (req,res)=>{
+})
+
+//Login
+router.post('/login', passport.authenticate('login',{failureRedirect: '/api/sessions/loginFail',failureMessage: true}),async (req,res)=>{
     try {
-         
-    const {email, password} = req.body;
-    if(email==="adminCoder@coder.com"&&password==="adminCod3r123"){
         req.session.user={
-            name: "Admin",
-            role: "admin",
-            email:"..."
-        }
-        return res.status(200).send({status:"success", message: "ADMIN in", payload: req.session.user})
+        name:req.user.name,
+        role:req.user.role,
+        id: req.user.id,
+        email: req.user.email
     }
-
-    //PASO 1: busco al usuario, ¿existe?
-    const user = await userModel.findOne({email, password})
-    if(!user) return res.status(400).send({status:"error", error: "Usuario o contraseña incorrectos"}) 
-    
-    //PASO 2: creo una sesion
-    req.session.user = {
-        name: `${user.first_name} ${user.last_name}`,
-        email: user.email,
-        role: user.role
-    }
-    res.status(200).send({status:"success", message: "logged in", payload: req.session.user})
+    res.status(200).send({status:"success", message: "Logged in", payload: req.session.user})
     } catch (error) {
-        res.status(500).send({message: "server error"})
+        console.log(error)
+        res.status(500).send({status:"error", error: req.session.messages})
     }
-   
+    
 })
+router.get('/loginFail', (req, res)=>{
+    res.status(400).send({status:"error", message:"Couldn't login"})
+})
+
+//Logout
 router.post('/logout', (req,res)=>{
     req.session.destroy(err=>{
         if(!err) res.clearCookie('connect.sid').status(200).redirect('/login')

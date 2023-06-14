@@ -90,8 +90,10 @@ router.put('/:cid/products/:pid',async (req, res)=>{//Modifico la cantidad de un
        
         // RES data
         let message
+            //Actualizo el cart y cartElement luego de haber cambiado las cantidades
         cart = await cartsManager.getCartById(cartId)
         cartElement = cart.products.find(el=>el.product._id.toString()===productId)||0
+            //Mensajes
         cartElement==0?
             message= "Product removed from cart":
             message=`Product amount set to ${cartElement.quantity}`

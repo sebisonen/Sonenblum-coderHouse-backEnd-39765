@@ -6,10 +6,11 @@ import viewsRouter from './routes/views.router.js'
 import { Server } from 'socket.io'
 import handlebars from 'express-handlebars';
 import mongoose from 'mongoose'
-
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import sessionsRouter from  './routes/sessions.router.js'
+import passport from 'passport'
+import initializePassport from './config/passport.config.js'
  
 // Server
     const app = express()
@@ -17,7 +18,7 @@ import sessionsRouter from  './routes/sessions.router.js'
     const io = new Server(server)
 
 // DB
-    const connectionString=''
+    const connectionString='mongodb+srv://sebisonenblum:Sebas1999Sonen@clusterdemosonen.yyxyxlr.mongodb.net/ecommerce?retryWrites=true&w=majority'
     const connection=mongoose.connect(connectionString)
 
 // CONFIG
@@ -32,20 +33,23 @@ import sessionsRouter from  './routes/sessions.router.js'
         // Public
         app.use(express.static(`${__dirname}/public`))
     //Sessions
-    app.use(session({
-        store: new MongoStore({
-            mongoUrl: connectionString,
-            ttl:3600
-        }),
-        secret: "MiZekretou",
-        resave: false,
-        saveUninitialized:false
-    }))
-    // Middlewares
+        app.use(session({
+            store: new MongoStore({
+                mongoUrl: connectionString,
+                ttl:3600
+            }),
+            secret: "MiZekretou",
+            resave: false,
+            saveUninitialized:false
+        }))
+    // Sockets config
         app.use((req,res,next)=>{
             req.io = io 
             next()
         })
+    //Passport
+        app.use(passport.initialize())
+        initializePassport()
 
     // Routers
         app.use('/api/carts', cartsRouter)
@@ -53,7 +57,7 @@ import sessionsRouter from  './routes/sessions.router.js'
         app.use('/api/sessions', sessionsRouter)
         app.use('/', viewsRouter)
 
-    // Socket
+    // Socket connection
         io.on('connection',()=>{
             console.log("Socket connected")
         })

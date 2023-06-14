@@ -62,7 +62,7 @@ router.get('/register',privacy("NOT_AUTHENTICATED"),(req,res)=>{
     res.render('register', {css:'register'})
 })
 router.get('/login',privacy("NOT_AUTHENTICATED"), (req,res)=>{
-    res.render('login', {css:'login'})
+    res.render('login', {messages, css:'login'})
 })
 
 
