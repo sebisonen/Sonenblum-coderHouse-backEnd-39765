@@ -65,6 +65,8 @@ router.get('/login',privacy("NOT_AUTHENTICATED"), (req,res)=>{
     res.render('login', {css:'login'})
 })
 
-
+router.get('/jwtProfile', (req,res)=>{
+    res.render('jwtProfile')
+})
 
 export default router

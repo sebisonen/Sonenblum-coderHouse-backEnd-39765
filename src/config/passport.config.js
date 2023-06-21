@@ -2,11 +2,41 @@ import passport from 'passport'
 import local from 'passport-local'
 import { createHash,validatePassword } from '../../utils.js'
 import userModel from '../models/users.model.js'
-    
+import GithubStrategy from 'passport-github2'
+
 const localStrategy = local.Strategy
 
 
 const initializePassport=()=>{
+   passport.use('github', 
+   new GithubStrategy(
+      {
+ 
+
+  },async(accesToken, refreshToken, profile, done)=>{
+      try {
+         //1. Tomo los datos que necesito
+         const {name ,email} = profile._json
+         //2.Busco el user en mi BBDD
+         const user = await userModel.findOne({email})
+         
+         //3. Validaciones
+         //A. No existe? Lo creo
+         if(!user){
+            const newUser = { 
+               first_name: name,
+               email,
+               password:''
+            }
+            const result = await userModel.create(newUser)
+            return done(null, result)
+         }
+         //B. Existe? Lo mando
+         return done(null,user)
+      } catch (error) {
+         done(error)
+      }
+  }))
    passport.use('register', new localStrategy({passReqToCallback:true,usernameField: 'email'}, async(req,email,password,done)=>{
       try {
 
@@ -55,9 +85,9 @@ const initializePassport=()=>{
          //3. Creo el usuario
          user = {
             id: user._id,
-             name: `${user.first_name} ${user.last_name}`,
-             email: user.email,
-             role: user.role
+            name: `${user.first_name} ${user.last_name}`,
+            email: user.email,
+            role: user.role
          }
          return done(null,user)
 

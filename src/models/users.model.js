@@ -10,19 +10,17 @@ const schema= new mongoose.Schema({
     },
     last_name: {
         type: String,
-        required:true,
-        minlength: 1
-    },
+        default:"",
+        },
     email: {
         type: String,
         required:true,
         minlength: 1
     },
-    password: {
-        type: String,
-        required:true,
-        minlength: 1
-    },
+    password:  String,
+        // required:true,
+        // minlength: 1
+    
     role:{
         type:String,
         default:"user"
