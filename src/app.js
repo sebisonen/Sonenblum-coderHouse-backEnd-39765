@@ -3,12 +3,11 @@ import __dirname from '../utils.js'
 import productsRouter from './routes/products.router.js'
 import cartsRouter from './routes/carts.router.js'
 import viewsRouter from './routes/views.router.js'
+import sessionsRouter from  './routes/sessions.router.js'
 import { Server } from 'socket.io'
 import handlebars from 'express-handlebars';
 import mongoose from 'mongoose'
-import session from "express-session";
-import MongoStore from "connect-mongo";
-import sessionsRouter from  './routes/sessions.router.js'
+import cookieParser from 'cookie-parser'
 import passport from 'passport'
 import initializePassport from './config/passport.config.js'
  
@@ -18,7 +17,7 @@ import initializePassport from './config/passport.config.js'
     const io = new Server(server)
 
 // DB
-    const connectionString='mongodb+srv://sebisonenblum:7Z0ReEbwlOECcDIA@clusterdemosonen.yyxyxlr.mongodb.net/ecommerce?retryWrites=true&w=majority'
+    const connectionString=
     const connection=mongoose.connect(connectionString)
 
 // CONFIG
@@ -32,25 +31,17 @@ import initializePassport from './config/passport.config.js'
         app.use(express.urlencoded({extended:true}))
         // Public
         app.use(express.static(`${__dirname}/public`))
-    //Sessions
-        app.use(session({
-            store: new MongoStore({
-                mongoUrl: connectionString,
-                ttl:3600
-            }),
-            secret: "MiZekretou",
-            resave: false,
-            saveUninitialized:false
-        }))
+
     // Sockets config
         app.use((req,res,next)=>{
             req.io = io 
             next()
         })
     //Passport
-        app.use(passport.initialize())
         initializePassport()
-
+    
+    //Cookie Parser
+        app.use(cookieParser())
     // Routers
         app.use('/api/carts', cartsRouter)
         app.use('/api/products', productsRouter)

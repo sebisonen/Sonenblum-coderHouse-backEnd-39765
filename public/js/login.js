@@ -7,7 +7,7 @@ form.addEventListener('submit',async (event)=>{
         obj[key]=value
     )
     
-    const response = await fetch('/api/sessions/login',{ //O '/api/sessions/jwtLogin' cuando use JWT
+    const response = await fetch('/api/sessions/login',{ 
         method: "POST",
         body: JSON.stringify(obj),
         headers:{
@@ -15,10 +15,10 @@ form.addEventListener('submit',async (event)=>{
         } 
     })
     const responseData = await response.json()
-    
-    if (responseData.status ==='success'){
-        //Esta linea es para cuando use JWT
-            // localStorage.setItem('accessToken', responseData.accessToken)
-        window.location.replace('/products')
+    console.log(responseData)
+    if (responseData.status=="success"){
+        window.location.replace('/')
     }
+    
+
 })

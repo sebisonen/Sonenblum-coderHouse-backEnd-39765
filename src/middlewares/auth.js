@@ -17,6 +17,16 @@ export const privacy = (privacyType) =>{
 }
 
 
+export const authRoles = (role) =>{ 
+    //recibe "user" o "admin", dependiendo si yo quiero que la ruta sea para que tipo de rol
+    //Si llegué a este punto, SIEMPRE debo tener un usuario ya. 
+    return async(req,res,next) => {
+      if(req.user.role!=role) return res.status(403).send({status:"error",error:"Fobidden"})
+      next();
+    }
+  }
+
+
 // Este middleware va a ser usado cuando yo quiera  y en las rutas que yo quiera
 // El proposito de este es que si no hay un usuario autenticado, no acceda a algunas rutas.
 // Osea: que si o si tengas que estar logueado para poder ver /products por ej.

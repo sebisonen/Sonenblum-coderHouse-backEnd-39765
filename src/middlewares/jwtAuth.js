@@ -19,5 +19,4 @@ export const authToken =(req, res, next)=>{
         //Termino el proceso
         next()
     })
-
 }
