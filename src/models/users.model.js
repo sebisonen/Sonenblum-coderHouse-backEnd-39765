@@ -17,6 +17,9 @@ const schema= new mongoose.Schema({
         required:true,
         minlength: 1
     },
+    cartId:{
+        type: String
+    },
     password:  String,
         // required:true,
         // minlength: 1

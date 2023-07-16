@@ -6,7 +6,6 @@ import passport from 'passport';
 
 export const generateToken =(user)=>{
     const token = jwt.sign(user, 'jwtSecret',{expiresIn:'24h'})
-    //IMPORTANTE: EN ESTA LINEA SACAR USER DE {} PONER USER SOLO DEPENDE SI USO JWT O NO
     return token
 }
 export const createHash = async (password)=>{
@@ -18,20 +17,31 @@ export const validatePassword = async (password, hashedPassword)=>bcrypt.compare
 export const passportCall = (strategy,options = {}) =>{
     return async(req,res,next) =>{ 
         passport.authenticate(strategy,(error,user,info)=> {
-            //Params del callback de authenticate son iguales a los que ejecuta done
-            //Xej done(null,false,{message:"contraseña invalida"})
+            //Si de la estrategia viene un error, mandalo
             if(error) return next(error);
-            if(!user) {
-                if(options.redirect) return res.redirect(options.redirect);
-                return res.status(401).send({status:"error",error:info.message?info.message:info.toString()})
+            //En el custom router uso JWT para validar todas las peticiones, lo cual no siempre voy a tener un token,
+            //así que voy a necesitar manejar yo mismo el flujo de datos:
+            if(!options.strategyType){//Le pido que me mande que tipo de estrategia se está utilizando en passport
+                console.log(`Route ${req.url} doesn't have defined a strategyType`)//Esto es más un error de development(?)
+                return res.sendServerError()
+            }
+            if(!user) {//Si no encontró usuario 
+                switch(options.strategyType){//puede ser que sea por el tipo de estrategia 
+                    case 'jwt'://Si estoy usando JWT 99% que el usuario no está logueado, por las dudas...
+                        req.error = info.message?info.message:info.toString()//ponelo en un error...
+                        return next()//...pero continuá igual, no cortes el programa
+                    case 'locals': //Si estoy usando register/login o cualquiera local
+                        return res.sendUnauthorized(info.message?info.message:info.toString())//Seguro es porque no esta autenticado
+
+                }
             }
             req.user = user;
             next();
-        })(req,res,next); //Esto no entendi
+        })(req,res,next); 
     }
 }
 export const cookieExtractor = (req) =>{
-    let token = null; //Aquí va a venir el token... Si lo encuentra
+    let token = null;
     if(req&&req.cookies) {
         token = req.cookies['accessToken']
     }

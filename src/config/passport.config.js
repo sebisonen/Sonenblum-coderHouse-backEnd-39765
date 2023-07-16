@@ -1,13 +1,18 @@
 import passport from 'passport'
+//estrategias
 import local from 'passport-local'
-import { createHash,validatePassword } from '../../utils.js'
-import userModel from '../models/users.model.js'
 import GithubStrategy from 'passport-github2'
 import { Strategy, ExtractJwt } from 'passport-jwt'
+//Modelos y managers
+import CartsManager from '../dao/managers/mongoDB/CartsManager.js'
+import userModel from '../models/users.model.js'
+//Utils
+import { createHash,validatePassword } from '../../utils.js'
 import { cookieExtractor } from '../../utils.js'
 
-const localStrategy = local.Strategy
 
+const localStrategy = local.Strategy
+const cartsManager = new CartsManager()
 
 const initializePassport=()=>{
    passport.use('github', 
@@ -59,6 +64,10 @@ const initializePassport=()=>{
    //3.Creo el usuario
          const user ={first_name, last_name, email, password:hashedPassword}
          const result = await userModel.create(user)
+         //Despues de crear al user y si es que lo pudo hacer => le agrego un cart personal
+         let cart = await cartsManager.createCart()
+         result.cartId = cart._id
+         result.save()
    //4.Mando el usuario
          done(null, result)
       } catch (error) {
@@ -66,7 +75,7 @@ const initializePassport=()=>{
       }
    }))
 
-   passport.use('login', (new localStrategy({usernameField: 'email'},async(email,password,done)=>{
+   passport.use('login', new localStrategy({usernameField: 'email'},async(email,password,done)=>{
       try {
       //0. Creo admin del proyecto
          if(email==="adminCoder@coder.com"&&password==="adminCod3r123"){
@@ -92,11 +101,12 @@ const initializePassport=()=>{
             email: user.email,
             role: user.role
          }
+
          return done(null,user)
          } catch (error) {
             done(error)
          }
-   })))
+   }))
 
    passport.use('jwt', new Strategy({
       jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),

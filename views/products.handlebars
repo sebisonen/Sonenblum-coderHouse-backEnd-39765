@@ -9,7 +9,15 @@
             <button id="logout-btn" type="submit">LOGOUT</button>
          </form>
            
-        {{/if}}
+{{/if}}
+
+{{#unless user}}
+    <a href="/login"><button id="logout-btn" type="submit" >LOGIN</button></a>
+{{/unless}}
+        
+            
+           
+       
 <div id="productsCatalogue">
     
     

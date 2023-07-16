@@ -13,7 +13,7 @@ export default class CartsManager{
         return isInCart
     }
     deleteCart = (cartId) => cartsModel.findByIdAndDelete(cartId)
-    deleteFromCart =(cartId, productId)=> cartsModel.updateOne({_id: cartId},{$pull: {products:{product: productId}}})
+    deleteFromCart = (cartId, productId)=> cartsModel.updateOne({_id: cartId}, {$pull: {products:{product: {_id: productId}}}})
     modifyQuantity = (cartId, productId, quantity) => cartsModel.updateOne({_id:cartId,"products.product":productId},{$inc:{"products.$.quantity":quantity}})
 
 }
