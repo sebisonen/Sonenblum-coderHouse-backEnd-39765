@@ -9,7 +9,8 @@ import userModel from '../models/users.model.js'
 //Utils
 import { createHash,validatePassword } from '../../utils.js'
 import { cookieExtractor } from '../../utils.js'
-
+//ENV
+import config from '../config.js'
 
 const localStrategy = local.Strategy
 const cartsManager = new CartsManager()
@@ -37,6 +38,9 @@ const initializePassport=()=>{
                password:''
             }
             const result = await userModel.create(newUser)
+            let cart = await cartsManager.createCart()
+            result.cartId = cart._id
+            result.save()
             return done(null, result)
          }
          //B. Existe? Lo mando
@@ -44,7 +48,8 @@ const initializePassport=()=>{
             id: user._id,
             name: user.first_name,
             email: user.email,
-            role: user.role
+            role: user.role,
+            cartId: user.cartId
          }
          return done(null,user)
       } catch (error) {
@@ -78,7 +83,8 @@ const initializePassport=()=>{
    passport.use('login', new localStrategy({usernameField: 'email'},async(email,password,done)=>{
       try {
       //0. Creo admin del proyecto
-         if(email==="adminCoder@coder.com"&&password==="adminCod3r123"){
+      let user
+         if(email===config.app.ADMIN.EMAIL&&password===config.app.ADMIN.PASSWORD){
              user={
                id: 0,
                name: "Admin",
@@ -88,7 +94,7 @@ const initializePassport=()=>{
              return done(null, user, {status:"success", message: "ADMIN in"})
          }
       //1. busco al usuario, ¿existe?
-         let user
+         
          user = await userModel.findOne({email})
          if(!user) return done(null,false,({message: "Usuario o contraseña incorrectos"}))
       //2.Verifico contraseña encriptada (si es que ya existe el user)
@@ -99,7 +105,8 @@ const initializePassport=()=>{
             id: user._id,
             name: `${user.first_name} ${user.last_name}`,
             email: user.email,
-            role: user.role
+            role: user.role,
+            cartId: user.cartId
          }
 
          return done(null,user)
@@ -110,7 +117,7 @@ const initializePassport=()=>{
 
    passport.use('jwt', new Strategy({
       jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
-      secretOrKey:'jwtSecret'
+      secretOrKey: config.app.JWT_SECRET
     }, async(payload,done)=>{
       return done(null,payload);
          //Payload va a ser el user, osea es lo que recibe

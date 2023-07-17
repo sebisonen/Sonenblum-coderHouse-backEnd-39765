@@ -1,9 +1,8 @@
-import mongoose from "mongoose";
 import cartsModel from "../../../models/carts.model.js";
 
 export default class CartsManager{
     getCarts = () => cartsModel.find().lean()
-    getCartById = (id) => cartsModel.findById(id).populate('products.product').lean()
+    getCartById = (id) => cartsModel.findOne({_id: id}).populate('products.product').lean()
     createCart = (cart) => cartsModel.create(cart)
     addToCart = (cartId, productId)=> cartsModel.updateOne({_id: cartId},{$push: {products:{product: productId, quantity: 1}}})
     // New methods

@@ -11,17 +11,17 @@ import SessionsRouter from './routes/sessions.router.js';
 import ViewsRouter from './routes/views.router.js'
 //Utils
 import __dirname from '../utils.js'
-
+//env
+import config from './config.js';
 
 
 // CONFIG
 // Server
 const app = express()
-const server = app.listen(8080, ()=>console.log("Listening on port 8080. Open http://localhost:8080"))
+const server = app.listen(config.app.PORT, ()=>console.log(`Listening on port ${config.app.PORT}. Open http://localhost:${config.app.PORT}`))
 
 // DB
-const connectionString=''
-const connection=mongoose.connect(connectionString)
+const connection=mongoose.connect(config.mongoDB.URL)
 
 // Handlebars
 app.engine('handlebars', handlebars.engine());

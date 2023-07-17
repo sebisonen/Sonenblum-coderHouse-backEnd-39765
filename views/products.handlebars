@@ -1,53 +1,64 @@
+<nav>
+{{#unless user}}
+    <a href="/login"><button id="logout-btn" type="submit" >LOGIN</button></a>
+    <a href="/login"><img id="cart-icon" src="/img/cartIcon.svg" alt=""></a> 
+{{/unless}}
+{{#if user}}
+        <form action="/api/sessions/logout" method="post">
+            <button id="logout-btn" type="submit">LOGOUT</button>
+        </form> 
+        <a href="/carts/{{user.cartId}}"><img id="cart-icon" src="/img/cartIcon.svg" alt=""></a> 
+{{/if}}
+
+
+</nav>
+
 <h1>Products</h1>   
 {{#if user}}
+        
          <div>
             <h2 style="color:whitesmoke">Hola, {{user.name}}</h2>
             <p style="color:whitesmoke">Correo: {{user.email}}</p>
             <p style="color:whitesmoke">Rol: {{user.role}}</p>
          </div>
-         <form action="/api/sessions/logout" method="post">
-            <button id="logout-btn" type="submit">LOGOUT</button>
-         </form>
+         
            
 {{/if}}
 
-{{#unless user}}
-    <a href="/login"><button id="logout-btn" type="submit" >LOGIN</button></a>
-{{/unless}}
-        
-            
+
            
        
 <div id="productsCatalogue">
     
     
-    {{#each products}}
-    
-    
-    <div id="{{this._id}}"  class="container">
-        <div class="details">
-            <div class="content">
-                <h2>{{this.title}} <br>
-                </h2>
-                <p>
-                    {{this.description}}
-                </p>
-                <h3>${{this.price}}</h3>
-                <br>
-                <div style="display:block">
-                    <button id="{{this._id}}-decreaseBtn"class="decrease-quantity-button">-</button>
-                    <div max="{{this.stock}}" id="{{this._id}}-quantity">1</div>
-                    <button id="{{this._id}}-increaseBtn" class="increase-quantity-button">+</button>
-                </div>
-                <form method=""action="/"></form>
-                <button id="addToCartBtn"href="" type="submit" method="POST">Add to cart</button>
-              
-                
-                
+{{#each products}}
+
+
+<div id="{{this._id}}"  class="container">
+    <div class="details">
+        <div class="content">
+            <h2>{{this.title}} <br>
+            </h2>
+            <p>
+                {{this.description}}
+            </p>
+            <h3>${{this.price}}</h3>
+            <br>
+            <div style="display:block">
+                <button id="{{this._id}}-decreaseBtn"class="decrease-quantity-button">-</button>
+                <div max="{{this.stock}}" id="{{this._id}}-quantity">1</div>
+                <button id="{{this._id}}-increaseBtn" class="increase-quantity-button">+</button>
             </div>
+            <form method="POST" action="api/carts/{{../user.cartId}}/products/{{this._id}}">
+            <button id="addToCartBtn" href="" type="submit" >Add to cart</button>
+            </form>
+            
+            
+            
         </div>
     </div>
-    {{/each}}
+</div>
+{{/each}}
 
      
 </div>

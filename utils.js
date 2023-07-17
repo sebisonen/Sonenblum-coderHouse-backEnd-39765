@@ -3,9 +3,10 @@ import { dirname } from 'path'; //=> Toma una referencia absoluta de donde yo te
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import passport from 'passport';
+import config from './src/config.js';
 
 export const generateToken =(user)=>{
-    const token = jwt.sign(user, 'jwtSecret',{expiresIn:'24h'})
+    const token = jwt.sign(user, config.app.JWT_SECRET,{expiresIn:'24h'})
     return token
 }
 export const createHash = async (password)=>{
@@ -32,7 +33,8 @@ export const passportCall = (strategy,options = {}) =>{
                         return next()//...pero continuá igual, no cortes el programa
                     case 'locals': //Si estoy usando register/login o cualquiera local
                         return res.sendUnauthorized(info.message?info.message:info.toString())//Seguro es porque no esta autenticado
-
+                    case 'github':
+                        return res.sendError(info.message?info.message:info.toString())
                 }
             }
             req.user = user;

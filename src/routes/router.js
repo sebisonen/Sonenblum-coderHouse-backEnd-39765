@@ -56,6 +56,7 @@ import {passportCall} from '../../utils.js'
         }
        handlePolicies=policies=>{
             return (req,res,next)=>{
+                
                 if(policies[0]==="PUBLIC")return next()
                 //A esta altura ya tengo el usuario desde passportCall()
                 const user = req.user 
