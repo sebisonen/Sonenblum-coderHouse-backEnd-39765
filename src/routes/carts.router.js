@@ -1,5 +1,4 @@
 import BaseRouter from "./router.js";
-import {cartsManager} from '../dao/managers/mongoDB/index.js'
 import * as cartsController from '../controllers/carts.controller.js'
 
 export default class CartsRouter extends BaseRouter{
@@ -11,5 +10,7 @@ export default class CartsRouter extends BaseRouter{
         this.put('/:cid/products/:pid', ["USER"], cartsController.modifyProductQuantity)
         this.delete('/:cid', ["USER"], cartsController.deleteCartById)
         this.delete('/:cid/products/:pid',["USER"], cartsController.deleteFromCart)
+        
+        this.post('/:cid/purchase', ["USER"], cartsController.purchase)
     }
 }

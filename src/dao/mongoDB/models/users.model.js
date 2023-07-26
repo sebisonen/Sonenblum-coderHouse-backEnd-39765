@@ -30,6 +30,6 @@ const schema= new mongoose.Schema({
     }
 },{timestamps:true, strict: "throw"})
 
-const userModel= mongoose.model(collection, schema)
+const usersModel= mongoose.models.users|| mongoose.model(collection, schema)
 
-export default userModel
+export default usersModel

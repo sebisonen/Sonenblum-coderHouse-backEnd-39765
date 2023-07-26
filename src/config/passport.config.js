@@ -1,20 +1,18 @@
 import passport from 'passport'
-//estrategias
+//Strategies
 import local from 'passport-local'
 import GithubStrategy from 'passport-github2'
 import { Strategy, ExtractJwt } from 'passport-jwt'
-//Modelos y managers
-import CartsManager from '../dao/managers/mongoDB/CartsManager.js'
-import userModel from '../models/users.model.js'
 //Utils
 import { createHash,validatePassword } from '../../utils.js'
 import { cookieExtractor } from '../../utils.js'
 //ENV
 import config from '../config.js'
+//Repositories
+import { usersRepository } from '../services/index.js'
+import { cartsRepository } from '../services/index.js'
 
 const localStrategy = local.Strategy
-const cartsManager = new CartsManager()
-
 const initializePassport=()=>{
    passport.use('github', 
    new GithubStrategy(
@@ -28,7 +26,7 @@ const initializePassport=()=>{
       //1. Tomo los datos que necesito
          const {name ,email} = profile._json
       //2.Busco el user en mi BBDD
-         let user = await userModel.findOne({email})
+         let user = await usersRepository.getUserByEmail(email)
       //3. Validaciones
          //A. No existe? Lo creo
          if(!user){
@@ -37,8 +35,10 @@ const initializePassport=()=>{
                email,
                password:''
             }
-            const result = await userModel.create(newUser)
-            let cart = await cartsManager.createCart()
+            const result = await usersRepository.createUser(newUser)
+            //Despues de crearlo le agrego un cart a ese usuario 
+            //(lo hago despues para evitar crear un cart si por algun motivo no se crea el usuario)
+            let cart = await cartsRepository.createCart()
             result.cartId = cart._id
             result.save()
             return done(null, result)
@@ -62,15 +62,16 @@ const initializePassport=()=>{
    // 0.Traigo de body todo lo que mandó el user
          const {first_name, last_name}= req.body
    //1.Corroboro si el usuario está en la bbdd
-         const exists = await userModel.findOne({email})
+         const exists = await usersRepository.getUserByEmail(email)
          if(exists)return done(null,false,{message:'User with this email already exists'})
    //2.Si el usuario no existe, encripto la password
          const hashedPassword = await createHash(password)
    //3.Creo el usuario
          const user ={first_name, last_name, email, password:hashedPassword}
-         const result = await userModel.create(user)
+         
+         const result = await usersRepository.createUser(user)
          //Despues de crear al user y si es que lo pudo hacer => le agrego un cart personal
-         let cart = await cartsManager.createCart()
+         let cart = await cartsRepository.createCart()
          result.cartId = cart._id
          result.save()
    //4.Mando el usuario
@@ -95,7 +96,8 @@ const initializePassport=()=>{
          }
       //1. busco al usuario, ¿existe?
          
-         user = await userModel.findOne({email})
+         
+         user = await usersRepository.getUserByEmail(email)
          if(!user) return done(null,false,({message: "Usuario o contraseña incorrectos"}))
       //2.Verifico contraseña encriptada (si es que ya existe el user)
          const isPasswordValid = await validatePassword(password, user.password)

@@ -1,14 +1,17 @@
 <div id={{cart._id}} >
     <h1 style = "margin-left: 10%">Cart </h1>
-
-    {{#each products}}
-    <div id="{{this.product._id}}" style="margin: 10% 20%">
-        <div >{{this.product.title}}</div>
-        <div >${{this.product.price}}</div>
-        <div>Quantity: {{this.quantity}}</div>
+    <div id="cart-container">
+        {{#each products}}
+            <div id="{{this.product._id}}" class="product-card">
+                <div >{{this.product.title}}</div>
+                <div>Quantity: {{this.quantity}}</div>
+                <div>${{this.product.price}} each</div>
+            </div>
+        {{/each}}
+        <div>Total:</div>
+        <form action="/api/carts/{{cart._id}}/purchase" method="post">
+            <button type= "submit" id="purchase-btn">Buy</button>
+        </form>
+        
     </div>
-
-
-    {{/each}}
-    
 </div>

@@ -1,4 +1,4 @@
-import cartsModel from "../../../models/carts.model.js";
+import cartsModel from "../models/carts.model.js";
 
 export default class CartsManager{
     getCarts = () => cartsModel.find().lean()
@@ -13,9 +13,15 @@ export default class CartsManager{
     }
     deleteCart = (cartId) => cartsModel.findByIdAndDelete(cartId)
     deleteFromCart = (cartId, productId)=> cartsModel.updateOne({_id: cartId}, {$pull: {products:{product: {_id: productId}}}})
-    modifyQuantity = (cartId, productId, quantity) => cartsModel.updateOne({_id:cartId,"products.product":productId},{$inc:{"products.$.quantity":quantity}})
-
+    modifyQuantity = (cartId, productId, quantity) => cartsModel.updateOne({_id:cartId,"products.product":productId}, {$inc:{"products.$.quantity":quantity}})
 }
+
+
+
+
+
+
+
 
 
 

@@ -33,6 +33,6 @@ import mongoosePaginate from 'mongoose-paginate-v2'
     }, {timestamps: {createdAt:'created_at', updatedAt:'updated_at'}, strict: "throw"});
 
     schema.plugin(mongoosePaginate)
-    const productsModel = mongoose.model(productsCollection,schema);
+    const productsModel = mongoose.models.products|| mongoose.model(productsCollection,schema) ;
 
     export default productsModel

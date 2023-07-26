@@ -2,7 +2,6 @@
 //Router
 import BaseRouter from './router.js'
 //Utils
-import { generateToken } from "../../utils.js";
 import { passportCall } from "../../utils.js";
 import * as sessionsController from "../controllers/sessions.controller.js"
 

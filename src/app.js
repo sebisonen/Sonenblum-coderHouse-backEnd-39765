@@ -54,4 +54,3 @@ app.use('/api/sessions', sessionsRouter.getRouter())
 
 const viewsRouter = new ViewsRouter()
 app.use('/', viewsRouter.getRouter())
-

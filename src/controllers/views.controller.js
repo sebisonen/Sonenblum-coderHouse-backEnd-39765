@@ -1,5 +1,5 @@
-import {cartsManager} from "../dao/managers/mongoDB/index.js";
-import productsModel from "../models/products.model.js"
+import productsModel from "../dao/mongoDB/models/products.model.js";
+import { cartsRepository } from "../services/index.js";
 
 export const productsView = async (req,res) =>{
     try {
@@ -28,9 +28,9 @@ export const productsView = async (req,res) =>{
 }
 export const cartsView = async (req,res)=>{
     try {
-        const cart = await cartsManager.getCartById(req.params.cid)
+        const cart = await cartsRepository.getCartById(req.params.cid)
         const products =cart.products
-        res.render('cart',{cart, products})
+        res.render('cart',{cart, products, css:'cart'})
     } catch (error) {
         res.render('error')
     }

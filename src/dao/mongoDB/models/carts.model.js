@@ -1,4 +1,4 @@
-import mongoose, { Schema } from 'mongoose'
+import mongoose from 'mongoose'
 
 const cartsCollections = 'carts'
 const cartsSchema = new mongoose.Schema({
@@ -24,6 +24,6 @@ cartsSchema.pre('findById', function(){
     this.populate('products.product')
 })
 
-const cartsModel = mongoose.model(cartsCollections, cartsSchema)
+const cartsModel = mongoose.models.carts|| mongoose.model(cartsCollections, cartsSchema)
 
 export default cartsModel
