@@ -1,5 +1,6 @@
 //Utils
 import { generateToken } from "../../utils.js"
+import loginDTO  from "../dto/users/usersDTO.js"
 
 export const register = async (req,res)=>{
     try {
@@ -22,7 +23,7 @@ export const login = (req,res)=>{
             })
             .sendSuccessWithPayload({payload: user} )
     } catch (error) {
-        res.sendError(error)
+        res.sendError(error.message)
     }
 }
 

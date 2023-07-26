@@ -1,8 +1,9 @@
-export default class tokenDTO{
-    constructor(user){
-        this.name = `${user.firstName} ${user.lastName}`,
+export default class loginDTO{
+    constructor(user){ 
+        this.id = user._id,
+        this.name = `${user.first_name} ${user.last_name}`,
+        this.email = user.email,
         this.role = user.role,
-        this.id = user._id
-        //Completar los que necesite
-    }
+        this.cartId = user.cartId
+     }
 }

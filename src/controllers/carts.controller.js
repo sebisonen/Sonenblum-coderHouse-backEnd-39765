@@ -116,11 +116,6 @@ export const deleteFromCart = async(req,res)=>{//Dentro de un cart elimino un pr
     }
 }
 
-
-
-// Testing del purchase
-//En el controler se hacen tambien validaciones de todo tipo
-
 export const purchase = async(req,res)=>{
     try {
         //Cart

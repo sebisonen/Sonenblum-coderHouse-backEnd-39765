@@ -11,6 +11,7 @@ import config from '../config.js'
 //Repositories
 import { usersRepository } from '../services/index.js'
 import { cartsRepository } from '../services/index.js'
+//DTO
 
 const localStrategy = local.Strategy
 const initializePassport=()=>{
@@ -110,7 +111,7 @@ const initializePassport=()=>{
             role: user.role,
             cartId: user.cartId
          }
-
+         
          return done(null,user)
          } catch (error) {
             done(error)
