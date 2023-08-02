@@ -9,6 +9,8 @@ import ProductsRouter from './routes/products.router.js'
 import CartsRouter from './routes/carts.router.js'
 import SessionsRouter from './routes/sessions.router.js';
 import ViewsRouter from './routes/views.router.js'
+//Simple router
+import mockRouter from './routes/mock.router.js'
 //Utils
 import __dirname from '../utils.js'
 //env
@@ -42,7 +44,6 @@ initializePassport()
 app.use(cookieParser())
 
 //Custom Routers
-
 const productsRouter = new ProductsRouter()
 app.use('/api/products', productsRouter.getRouter() )
 
@@ -54,3 +55,6 @@ app.use('/api/sessions', sessionsRouter.getRouter())
 
 const viewsRouter = new ViewsRouter()
 app.use('/', viewsRouter.getRouter())
+
+//Simple router
+app.use('/', mockRouter)

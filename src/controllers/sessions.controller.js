@@ -1,6 +1,6 @@
 //Utils
 import { generateToken } from "../../utils.js"
-import loginDTO  from "../dto/users/usersDTO.js"
+
 
 export const register = async (req,res)=>{
     try {
