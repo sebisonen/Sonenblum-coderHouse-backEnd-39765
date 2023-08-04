@@ -1,3 +1,6 @@
+import EErrors from '../constants/EErrors.js'
+import { cartsErrorOutOfStock } from '../constants/cartsErrors.js'
+import ErrorService from '../services/ErrorService.js'
 import { cartsRepository, ticketsRepository, productsRepository } from '../services/index.js'
 
 export const getCarts = async(req,res)=>{//Traigo todo los carts
@@ -40,6 +43,18 @@ export const addToCart = async (req, res)=>{
         const cartId = String(req.params.cid)
         const productId = String(req.params.pid)
         const wasInCart = await cartsRepository.isProductInCart(cartId, productId)
+        
+        //CHECKING IF HAS STOCK
+        const storeProduct = await productsRepository.getProductById(productId)
+        if(storeProduct.stock<=0){
+            ErrorService.createError({
+                name: "Adding to cart error",
+                cause: cartsErrorOutOfStock(storeProduct),
+                message: "The product couldn't be added to cart, it is out of stock",
+                code: EErrors.OUT_OF_STOCK
+            })
+        }
+        
         // Operations
         wasInCart?
             await cartsRepository.modifyQuantity(cartId, productId, 1):
@@ -50,7 +65,8 @@ export const addToCart = async (req, res)=>{
 
         res.status(200).send({status: "Success", message: wasInCart?"One more product was added":"Added to cart", cart}) 
     } catch (error) {
-        res.sendServerError()
+        console.log(error)
+        res.send({status:"error", error: error.message})
     }
 }
 export const modifyProductQuantity =async (req, res)=>{

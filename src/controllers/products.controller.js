@@ -1,3 +1,6 @@
+import EErrors  from "../constants/EErrors.js";
+import { productsErrorIncompleteValues } from "../constants/productsErrors.js";
+import ErrorService from "../services/ErrorService.js";
 import { productsRepository } from "../services/index.js";
 
 export const getProducts = async (req,res)=>{
@@ -25,13 +28,26 @@ export const getProductById = async (req,res)=>{
 export const addProduct = async (req, res) => { 
     try {
       const product= req.body;
+        const title = typeof product.title
+        
+      if(!product.title||!product.price||!product.stock){  
+        ErrorService.createError({
+            name:"Product creation error",
+            cause: productsErrorIncompleteValues(product),
+            message: "Error adding new product",
+            code: EErrors.INCOMPLETE_VALUES
+        })
+      }
+    //   if(typeof product.title=number)
       const adding = await productsRepository.addProduct(product)
       adding?
       res.sendSuccess("Product added succesfully"):
       res.sendError("Product couldn't be added")
       
     } catch (error) {
-        res.sendError(error.message)
+        console.log(error)
+        res.send({status:"error", error: error.message})
+        
     }
 }
 export const modifyProductById = async (req, res) =>{

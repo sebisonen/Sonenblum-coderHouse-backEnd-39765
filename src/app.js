@@ -15,7 +15,8 @@ import mockRouter from './routes/mock.router.js'
 import __dirname from '../utils.js'
 //env
 import config from './config.js';
-
+//Middlewares
+import errorHandler from './middlewares/error.js'
 
 // CONFIG
 // Server
@@ -43,6 +44,7 @@ initializePassport()
 //Cookie Parser
 app.use(cookieParser())
 
+
 //Custom Routers
 const productsRouter = new ProductsRouter()
 app.use('/api/products', productsRouter.getRouter() )
@@ -58,3 +60,6 @@ app.use('/', viewsRouter.getRouter())
 
 //Simple router
 app.use('/', mockRouter)
+
+//Error handler
+app.use(errorHandler)
