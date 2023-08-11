@@ -6,11 +6,13 @@ import { cartsRepository, ticketsRepository, productsRepository } from '../servi
 export const getCarts = async(req,res)=>{//Traigo todo los carts
     try {
         const carts = await cartsRepository.getCarts()
+        req.logger.info(carts)
         carts?
             res.sendSuccessWithPayload(carts):
             res.sendError("The cart was not found")
         
     } catch (error) {
+        req.logger.error(`${req.method} at  ${req.originalUrl} - ${new Date().toLocaleString()} by user ${req.user?req.user.name:"public."}.\n Error: ${error}`)
         res.sendServerError()
     }
 }
@@ -19,11 +21,13 @@ export const getCartById =  async (req, res)=>{
         const id= String(req.params.cid)
         
         const cart = await cartsRepository.getCartById(id)
+        
         cart?
             res.sendSuccessWithPayload(cart):
             res.sendError("The cart was not found")
     
     } catch (error) {
+        req.logger.error(`${req.method} at  ${req.originalUrl} - ${new Date().toLocaleString()} by user ${req.user?req.user.name:"public."}.\n Error: ${error}`)
         res.sendServerError()
     }
     
@@ -34,6 +38,7 @@ export const createCart = async (req, res)=>{//Creo un nuevo cart para un usuari
         await cartsRepository.createCart(cart)
         res.sendSuccess("Cart created") 
     }catch (error) {
+        req.logger.error(`${req.method} at  ${req.originalUrl} - ${new Date().toLocaleString()} by user ${req.user?req.user.name:"public."}.\n Error: ${error}`)
         res.sendServerError()
     }
 }
@@ -65,7 +70,7 @@ export const addToCart = async (req, res)=>{
 
         res.status(200).send({status: "Success", message: wasInCart?"One more product was added":"Added to cart", cart}) 
     } catch (error) {
-        console.log(error)
+        req.logger.error(`${req.method} at  ${req.originalUrl} - ${new Date().toLocaleString()} by user ${req.user?req.user.name:"public."}.\n Error: ${error}`)
         res.send({status:"error", error: error.message})
     }
 }
@@ -107,6 +112,7 @@ export const modifyProductQuantity =async (req, res)=>{
             message=`Product amount set to ${cartElement.quantity}`
         res.sendSuccess(message)
     } catch (error) {
+        req.logger.error(`${req.method} at  ${req.originalUrl} - ${new Date().toLocaleString()} by user ${req.user?req.user.name:"public."}.\n Error: ${error}`)
         res.sendServerError()
     }
 }
@@ -117,6 +123,7 @@ export const deleteCartById = async (req,res)=>{//Elimino un determinado cart se
         res.sendSuccess("Cart deleted")
         
     }catch (error) {
+        req.logger.error(`${req.method} at  ${req.originalUrl} - ${new Date().toLocaleString()} by user ${req.user?req.user.name:"public."}.\n Error: ${error}`)
         res.sendServerError()
     }
 }
@@ -128,6 +135,7 @@ export const deleteFromCart = async(req,res)=>{//Dentro de un cart elimino un pr
         const deleted = await cartsRepository.deleteFromCart(cartId, productId)
         res.sendSuccess("Removed from cart")
     } catch (error) {
+        req.logger.error(`${req.method} at  ${req.originalUrl} - ${new Date().toLocaleString()} by user ${req.user?req.user.name:"public."}.\n Error: ${error}`)
         res.sendServerError()
     }
 }
@@ -177,6 +185,7 @@ export const purchase = async(req,res)=>{
         })
         res.send({message: "ticket-endpoint", payload: ticket, unavailableProducts})
     } catch (error) {
+        req.logger.error(`${req.method} at  ${req.originalUrl} - ${new Date().toLocaleString()} by user ${req.user?req.user.name:"public."}.\n Error: ${error}`)
         res.sendError(error.message)
     }
 }

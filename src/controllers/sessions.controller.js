@@ -6,6 +6,8 @@ export const register = async (req,res)=>{
     try {
         res.sendSuccess("Registered")
     } catch (error) {
+        req.logger.error(`${req.method} at  ${req.originalUrl} - ${new Date().toLocaleString()} by user ${req.user?req.user.name:"public."}.\n Error: ${error}`)
+
         res.sendError(error)
     }    
 }
@@ -23,6 +25,8 @@ export const login = (req,res)=>{
             })
             .sendSuccessWithPayload({payload: user} )
     } catch (error) {
+        req.logger.error(`${req.method} at  ${req.originalUrl} - ${new Date().toLocaleString()} by user ${req.user?req.user.name:"public."}.\n Error: ${error}`)
+
         res.sendError(error.message)
     }
 }
@@ -32,6 +36,8 @@ export const logout = (req,res)=>{
         res.clearCookie('accessToken').status(200).redirect('/')
         //El redirect tiene que estar en public
     } catch (error) {
+        req.logger.error(`${req.method} at  ${req.originalUrl} - ${new Date().toLocaleString()} by user ${req.user?req.user.name:"public."}.\n Error: ${error}`)
+
         res.sendError(error)
     }
 }
@@ -57,6 +63,8 @@ export const githubLogin= (req,res)=>{
             .redirect('/')
             //El redirect hacerlo en public
     } catch (error) {
+        req.logger.error(`${req.method} at  ${req.originalUrl} - ${new Date().toLocaleString()} by user ${req.user?req.user.name:"public."}.\n Error: ${error}`)
+
         res.sendError(error)
     }
     

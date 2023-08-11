@@ -1,0 +1,20 @@
+{"level":"error","message":"POST at  / - 11/8/2023, 18:51:59 by user Admin"}
+{"level":"error","message":"POST at  / - 11/8/2023, 18:52:35 by user Admin"}
+{"level":"error","message":"POST at  / - 11/8/2023, 18:52:45 by user Admin"}
+{"level":"error","message":"POST at  / - 11/8/2023, 18:53:12 by user Admin"}
+{"level":"error","message":"POST at  / - 11/8/2023, 18:54:58 by user Admin"}
+{"level":"error","message":"POST at  / - 11/8/2023, 18:55:17 by user Admin"}
+{"level":"error","message":"POST at  / - 11/8/2023, 18:55:31 by user Admin"}
+{"level":"error","message":"POST at  / - 11/8/2023, 18:57:34 by user Admin"}
+{"level":"error","message":"POST at  / - 11/8/2023, 18:58:48 by user Admin"}
+{"level":"error","message":"POST at  /api/products - 11/8/2023, 18:59:29 by user Admin"}
+{"level":"error","message":"POST at  /api/products - 11/8/2023, 19:01:00 by user Admin"}
+{"level":"error","message":"POST at  /api/products - 11/8/2023, 19:03:02 by user Admin"}
+{"level":"error","message":"POST at  /api/products - 11/8/2023, 19:03:25 by user Admin"}
+{"level":"error","message":"POST at  /api/products - 11/8/2023, 19:03:34 by user Admin"}
+{"level":"error","message":"POST at  /api/products - 11/8/2023, 19:04:54 by user Admin"}
+{"level":"error","message":"POST at  /api/products - 11/8/2023, 19:05:29 by user Admin. Error: MongoServerError: E11000 duplicate key error collection: ecommerce.products index: code_1 dup key: { code: \"asdfghjklñ\" }"}
+{"level":"error","message":"POST at  /api/products - 11/8/2023, 19:06:01 by user Admin.\n Error: MongoServerError: E11000 duplicate key error collection: ecommerce.products index: code_1 dup key: { code: \"asdfghjklñ\" }"}
+{"level":"warning","message":"GET at  /loggerTest - 11/8/2023, 19:24:47 by user [object Object]"}
+{"level":"error","message":"GET at  /loggerTest - 11/8/2023, 19:24:47 by user [object Object]"}
+{"level":"fatal","message":"GET at  /loggerTest - 11/8/2023, 19:24:47 by user [object Object]"}

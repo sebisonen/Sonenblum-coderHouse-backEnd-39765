@@ -8,8 +8,10 @@ export const getProducts = async (req,res)=>{
         let products = await productsRepository.getProducts()
         const limit = req.query.limit
         const listedProducts = products.slice(0, limit)
+        req.logger.info(limit==0?products:listedProducts)
         res.sendSuccessWithPayload(limit==0?products:listedProducts)
     } catch (error) {
+        req.logger.info(error)
         res.sendServerError()
     }
 }
@@ -18,6 +20,7 @@ export const getProductById = async (req,res)=>{
     try {
         const id = String(req.params.pid)
         const product = await productsRepository.getProductById(id)
+        req.logger.info(product)
         product?
             res.sendSuccessWithPayload(product):
             res.sendError("The product was not found")
@@ -29,7 +32,7 @@ export const addProduct = async (req, res) => {
     try {
       const product= req.body;
         const title = typeof product.title
-        
+        const user = req.user
       if(!product.title||!product.price||!product.stock){  
         ErrorService.createError({
             name:"Product creation error",
@@ -38,14 +41,14 @@ export const addProduct = async (req, res) => {
             code: EErrors.INCOMPLETE_VALUES
         })
       }
-    //   if(typeof product.title=number)
       const adding = await productsRepository.addProduct(product)
+      req.logger.info(adding)
       adding?
       res.sendSuccess("Product added succesfully"):
       res.sendError("Product couldn't be added")
-      
+
     } catch (error) {
-        console.log(error)
+        req.logger.error(`${req.method} at  ${req.originalUrl} - ${new Date().toLocaleString()} by user ${req.user?req.user.name:"public."}.\n Error: ${error}`)
         res.send({status:"error", error: error.message})
         
     }
@@ -55,10 +58,12 @@ export const modifyProductById = async (req, res) =>{
         const fields= req.body;
         const id= String(req.params.pid)
         const updating = await productsRepository.updateProduct(id, fields)
+        req.logger.info(updating)
         updating?
         res.sendSuccess("Product updated succesfully"):
         res.sendError("Product couldn't be updated")
     } catch (error) {
+        req.logger.error(`${req.method} at  ${req.originalUrl} - ${new Date().toLocaleString()} by user ${req.user?req.user.name:"public."}.\n Error: ${error}`)
         res.sendServerError()
     } 
 }
@@ -66,10 +71,13 @@ export const deleteProductById = async (req, res) =>{
     try {
       const id=String(req.params.pid)
       const deleted= await productsRepository.deleteProduct(id)
+      req.logger.info(deleted)
       deleted?
       res.sendSuccess("Product deleted succesfully"):
       res.sendError("Prouduct couldn't be deleted")
     } catch (error) {
+        req.logger.error(`${req.method} at  ${req.originalUrl} - ${new Date().toLocaleString()} by user ${req.user?req.user.name:"public."}.\n Error: ${error}`)
         res.sendServerError()
     }
   }
+  

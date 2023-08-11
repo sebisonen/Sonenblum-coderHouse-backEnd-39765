@@ -10,7 +10,7 @@ import CartsRouter from './routes/carts.router.js'
 import SessionsRouter from './routes/sessions.router.js';
 import ViewsRouter from './routes/views.router.js'
 //Simple router
-import mockRouter from './routes/mock.router.js'
+import MockRouter from './routes/mock.router.js'
 //Utils
 import __dirname from '../utils.js'
 //env
@@ -43,8 +43,9 @@ initializePassport()
 
 //Cookie Parser
 app.use(cookieParser())
+//Logger
 
-
+// app.use(attachLogger)
 //Custom Routers
 const productsRouter = new ProductsRouter()
 app.use('/api/products', productsRouter.getRouter() )
@@ -58,8 +59,10 @@ app.use('/api/sessions', sessionsRouter.getRouter())
 const viewsRouter = new ViewsRouter()
 app.use('/', viewsRouter.getRouter())
 
-//Simple router
-app.use('/', mockRouter)
+const mockRouter = new MockRouter()
+app.use('/api/mocks', mockRouter.getRouter())
 
 //Error handler
-app.use(errorHandler)
+app.use(errorHandler) //CREO QUE NO ESTÁ ENTRANDO A ESTO
+
+

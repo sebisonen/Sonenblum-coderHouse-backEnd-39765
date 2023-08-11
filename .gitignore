@@ -1,3 +1,4 @@
 node_modules/
 apunte/
 .env.dev
+.env.prod

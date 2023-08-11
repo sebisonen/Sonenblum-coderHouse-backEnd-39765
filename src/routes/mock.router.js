@@ -1,18 +1,8 @@
-import { Router } from "express";
-import { generateProduct } from "../mocks/products.mock.js";
-
-const router = Router()
-
-router.get('/mockproducts', (req,res)=>{
-    try {
-        let users =[]
-        for (let i=0; i < 50; i++ ){
-             users.push(generateProduct())
-        }
-        res.send({status:"success", payload: users})
-    } catch (error) {
-        res.status(500).send({status:"error", message: error.message})
+import BaseRouter from "./router.js";
+import { mockProducts, loggerTest } from "../controllers/mock.controller.js";
+export default class MockRouter extends BaseRouter{
+    init(){
+        this.get('/mockproducts',["PUBLIC"],mockProducts )
+        this.get('/loggerTest',["PUBLIC"], loggerTest)
     }
-})
-
-export default router
+}
