@@ -6,7 +6,7 @@ import { cartsRepository, ticketsRepository, productsRepository } from '../servi
 export const getCarts = async(req,res)=>{//Traigo todo los carts
     try {
         const carts = await cartsRepository.getCarts()
-        req.logger.info(carts)
+        req.logger.info(JSON.stringify(carts))
         carts?
             res.sendSuccessWithPayload(carts):
             res.sendError("The cart was not found")
@@ -19,9 +19,8 @@ export const getCarts = async(req,res)=>{//Traigo todo los carts
 export const getCartById =  async (req, res)=>{
     try {
         const id= String(req.params.cid)
-        
         const cart = await cartsRepository.getCartById(id)
-        
+        req.logger.info(JSON.stringify(cart))
         cart?
             res.sendSuccessWithPayload(cart):
             res.sendError("The cart was not found")
@@ -133,6 +132,7 @@ export const deleteFromCart = async(req,res)=>{//Dentro de un cart elimino un pr
         const cartId = String(req.params.cid)
         const productId = String(req.params.pid)            
         const deleted = await cartsRepository.deleteFromCart(cartId, productId)
+        req.logger.info(JSON.stringify(deleted))
         res.sendSuccess("Removed from cart")
     } catch (error) {
         req.logger.error(`${req.method} at  ${req.originalUrl} - ${new Date().toLocaleString()} by user ${req.user?req.user.name:"public."}.\n Error: ${error}`)

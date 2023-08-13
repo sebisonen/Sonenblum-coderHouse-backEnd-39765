@@ -23,7 +23,7 @@ export const passportCall = (strategy,options = {}) =>{
             //En el custom router uso JWT para validar todas las peticiones, lo cual no siempre voy a tener un token,
             //así que voy a necesitar manejar yo mismo el flujo de datos:
             if(!options.strategyType){//Le pido que me mande que tipo de estrategia se está utilizando en passport
-                console.log(`Route ${req.url} doesn't have defined a strategyType`)//Esto es más un error de development(?)
+                req.logger.info(`Route ${req.url} doesn't have defined a strategyType`)//Esto es más un error de development(?)
                 return res.sendServerError()
             }
             if(!user) {//Si no encontró usuario 

@@ -20,7 +20,7 @@ export const getProductById = async (req,res)=>{
     try {
         const id = String(req.params.pid)
         const product = await productsRepository.getProductById(id)
-        req.logger.info(product)
+        req.logger.info(JSON.stringify(product))
         product?
             res.sendSuccessWithPayload(product):
             res.sendError("The product was not found")
@@ -42,7 +42,7 @@ export const addProduct = async (req, res) => {
         })
       }
       const adding = await productsRepository.addProduct(product)
-      req.logger.info(adding)
+      req.logger.info(JSON.stringify(adding))
       adding?
       res.sendSuccess("Product added succesfully"):
       res.sendError("Product couldn't be added")
@@ -58,7 +58,7 @@ export const modifyProductById = async (req, res) =>{
         const fields= req.body;
         const id= String(req.params.pid)
         const updating = await productsRepository.updateProduct(id, fields)
-        req.logger.info(updating)
+        req.logger.info(JSON.stringify(updating))
         updating?
         res.sendSuccess("Product updated succesfully"):
         res.sendError("Product couldn't be updated")
@@ -71,7 +71,7 @@ export const deleteProductById = async (req, res) =>{
     try {
       const id=String(req.params.pid)
       const deleted= await productsRepository.deleteProduct(id)
-      req.logger.info(deleted)
+      req.logger.info(JSON.stringify(deleted))
       deleted?
       res.sendSuccess("Product deleted succesfully"):
       res.sendError("Prouduct couldn't be deleted")
