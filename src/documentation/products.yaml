@@ -1,0 +1,246 @@
+#ROUTES
+paths:
+  /api/products:
+  #qué metodos se relacionan con esta ruta;
+    get: 
+      summary: Returns all the products in the Database.
+      #en qué grupo lo voy a tener:
+      tags: 
+        - Products
+      #qué posibles respuestas tiene este endpoint en particular
+      responses: 
+        "200":
+          description: "Products getted succesfully"
+          #cómo se ven esos usuarios que me trae
+          content:
+            #me lo está devolviendo en este formato
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Request status.
+                  payload:
+                    type: array
+                    items:
+                      $ref: '#components/schemas/Product' 
+                      #El simbolo # significa en el archivo en el que estoy=>
+                        #Andá a components=>schemas=>products
+        "500":
+          description: "Internal server error. May be due to a failure at the Database. Check database conection."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Request status.
+    post: 
+      summary: Uploads a product in the Database.
+      tags: 
+        - Products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/schemas/requestBodies/CreateProduct'
+      responses:
+        "200":
+          description: "Product added succesfully"
+          #cómo se ven esos usuarios que me trae
+        "400":
+          description: "Product couldn't be added"
+        "500":
+          description: "Internal server error"
+  /api/products/{pid}:
+    get: 
+      summary: Returns a single product based on the product ID.
+      tags: 
+        - Products
+      parameters: 
+      - name: pid
+        in: path #tambien lo podría encontrar en query o headers
+        required: true
+        description: DB product Id, needed to get product
+        schema:
+            type: string
+      responses: 
+        "200":
+          description: "Product getted succesfully"
+          #cómo se ven esos usuarios que me trae
+          content:
+            #me lo está devolviendo en este formato
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Request status.
+                  payload:
+                    type: object
+                    $ref: '#components/schemas/Product' 
+                      #El simbolo # significa en el archivo en el que estoy=>
+                        #Andá a components=>schemas=>products
+        "400":
+          description: "The product was not found"
+        "500":
+          description: "Internal server error. May be due to a failure at the Database. Check database conection."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Request status.
+
+    put:
+      summary: Updates a single product based on the product ID.
+      tags: 
+        - Products
+      parameters: 
+      - name: pid
+        in: path #tambien lo podría encontrar en query o headers
+        required: true
+        description: DB Id, needed to get product
+        schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/schemas/requestBodies/UpdateProduct'
+      responses:
+        "200":
+          description: "Product updated succesfully"
+          #cómo se ven esos usuarios que me trae
+        "400":
+          description: "Product couldn't be updated"
+        "500":
+          description: "Internal server error"
+          
+          
+    delete:
+      summary: Deletes a single product based on the product ID.
+      tags: 
+        - Products
+      parameters: 
+      - name: pid
+        in: path #tambien lo podría encontrar en query o headers
+        required: true
+        description: DB Id, needed to get product
+        schema:
+            type: string
+      responses:
+        "200":
+          description: "Product deleted succesfully"
+          #cómo se ven esos usuarios que me trae
+        "400":
+          description: "Product couldn't be deleted"
+        "500":
+          description: "Internal server error"
+
+#SCHEMAS
+components: #(todos los archivos referenciales dentro del proyecto
+  schemas: #si tengo DTO puedo escribir las distintas variables y formas de nombrar esa entidad
+    Product:
+      type: object
+      properties: 
+        title:
+          type: string
+          description: Product's title. (Required)
+        description:
+          type: string
+          description: Product's description. (Required)
+        price:
+          type: number
+          description: Product's price. (Required)
+        thumbnail:
+          type: string
+          description: Product's thumbnail. (Not required)
+        code:
+          type: string
+          description: Product's code. (Required and must be unique)
+        stock:
+          type: number
+          description: Product's stock. (Required)
+        id:
+          type: string
+          description: Product's id. (Required. Do not confuse with DB's autogenerated ID)
+        _id:
+          type: string
+          description: Self generated ID by Database (it's returned in a string format, but it's datatype is actually an ObjectId)
+      example:
+        _id: "6468f50d1bd3a9a2b9b635d4"
+        title: "producto prueba 1"
+        description: "Este es un producto prueba"
+        price: 700
+        thumbnail: "Sin imagen"
+        code: "abc123"
+        stock: 1
+        id: 1
+        __v: 0
+        created_at: "2023-05-20T16:27:57.919Z"
+        updated_at: "2023-07-26T03:54:25.942Z"
+    requestBodies:
+      UpdateProduct:
+        type: object
+        properties:
+          title:
+            type: string
+            description: Product's title. (Required)
+          description:
+            type: string
+            description: Product's description. (Required)
+          price:
+            type: number
+            description: Product's price. (Required)
+          thumbnail:
+            type: string
+            description: Product's thumbnail. (Not required)
+          stock:
+            type: number
+            description: Product's stock. (Required)
+        example:
+          title: "producto prueba 1"
+          description: "Este es un producto prueba"
+          price: 700
+          thumbnail: "Sin imagen"
+          stock: 1
+      CreateProduct:
+        type: object
+        properties:
+          title:
+            type: string
+            description: Product's title. (Required)
+          description:
+            type: string
+            description: Product's description. (Required)
+          price:
+            type: number
+            description: Product's price. (Required)
+          thumbnail:
+            type: string
+            description: Product's thumbnail. (Not required)
+          stock:
+            type: number
+            description: Product's stock. (Required)
+          code:
+            type: string
+            description: Product's code. (Required and must be unique)
+          id:
+            type: number
+            description: Product's local ID generated by User (Required and must be unique)
+        example:
+          title: "producto prueba 1"
+          description: "Este es un producto prueba"
+          price: 700
+          thumbnail: "Sin imagen"
+          stock: 1
+          id: 59
+          code: abc123abc

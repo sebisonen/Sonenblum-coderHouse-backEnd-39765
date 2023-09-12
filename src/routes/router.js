@@ -51,10 +51,10 @@ import attachLogger from "../middlewares/logger.js"
             )
         }        
         generateCustomResponses = (req,res,next)=>{
-            res.sendSuccess = message => res.send({status: "success", message})
-            res.sendSuccessWithPayload = payload =>res.send({status: "success", payload})
+            res.sendSuccess = message => res.status(200).send({status: "success", message})
+            res.sendSuccessWithPayload = payload =>res.status(200).send({status: "success", payload})
             res.sendError= message=>res.status(400).send({status: "error", message})
-            res.sendServerError = error=> res.status(500).send({status:"error", message:"Server error. Get in touch with the developer", error})
+            res.sendServerError = error=> res.status(500).send({status:"error", message:"Internal server error.", error})
             res.sendUnauthorized= error=>res.status(401).send({status:"error", error})
             next()
         }

@@ -18,3 +18,4 @@
 {"level":"warning","message":"GET at  /loggerTest - 11/8/2023, 19:24:47 by user [object Object]"}
 {"level":"error","message":"GET at  /loggerTest - 11/8/2023, 19:24:47 by user [object Object]"}
 {"level":"fatal","message":"GET at  /loggerTest - 11/8/2023, 19:24:47 by user [object Object]"}
+{"level":"error","message":"GET at  /simple - 18/8/2023, 13:16:38 by user public."}

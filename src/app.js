@@ -17,6 +17,10 @@ import __dirname from '../utils.js'
 import config from './config.js';
 //Middlewares
 import errorHandler from './middlewares/error.js'
+//Swagger
+import swaggerJSDoc from 'swagger-jsdoc'
+import swaggerUiExpress from 'swagger-ui-express'
+    
 
 // CONFIG
 // Server
@@ -38,14 +42,27 @@ app.use(express.urlencoded({extended:true}))
 // Public
 app.use(express.static(`${__dirname}/public`))
 
+//Swagger
+const swaggerOptions ={
+    definition: {
+        openapi: '3.0.1', 
+        info:{ 
+            title: "Sebastian Sonenblum's coderHouse Backend Project",
+            description: "Documentation for the main API of this project"
+        }
+    },
+    apis:[`${__dirname}/src/documentation/**/*.yaml`]
+}
+const specifications = swaggerJSDoc(swaggerOptions);
+
+app.use('/docs',swaggerUiExpress.serve, swaggerUiExpress.setup(specifications));
+
 //Passport
 initializePassport()
 
 //Cookie Parser
 app.use(cookieParser())
-//Logger
 
-// app.use(attachLogger)
 //Custom Routers
 const productsRouter = new ProductsRouter()
 app.use('/api/products', productsRouter.getRouter() )

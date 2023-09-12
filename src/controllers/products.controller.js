@@ -8,10 +8,14 @@ export const getProducts = async (req,res)=>{
         let products = await productsRepository.getProducts()
         const limit = req.query.limit
         const listedProducts = products.slice(0, limit)
-        req.logger.info(limit==0?products:listedProducts)
+        req.logger.info(`Products: ${
+            limit==0?
+                JSON.stringify(products, null, 1):
+                JSON.stringify(listedProducts, null, 1)
+        }`)
         res.sendSuccessWithPayload(limit==0?products:listedProducts)
     } catch (error) {
-        req.logger.info(error)
+        req.logger.info(JSON.stringify(error))
         res.sendServerError()
     }
 }
@@ -31,8 +35,6 @@ export const getProductById = async (req,res)=>{
 export const addProduct = async (req, res) => { 
     try {
       const product= req.body;
-        const title = typeof product.title
-        const user = req.user
       if(!product.title||!product.price||!product.stock){  
         ErrorService.createError({
             name:"Product creation error",

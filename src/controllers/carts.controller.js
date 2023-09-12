@@ -9,7 +9,7 @@ export const getCarts = async(req,res)=>{//Traigo todo los carts
         req.logger.info(JSON.stringify(carts))
         carts?
             res.sendSuccessWithPayload(carts):
-            res.sendError("The cart was not found")
+            res.sendError("The carts were not found")
         
     } catch (error) {
         req.logger.error(`${req.method} at  ${req.originalUrl} - ${new Date().toLocaleString()} by user ${req.user?req.user.name:"public."}.\n Error: ${error}`)

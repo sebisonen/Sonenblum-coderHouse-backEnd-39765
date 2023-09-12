@@ -1,0 +1,226 @@
+paths:
+  /api/carts:
+    get: #getCarts 
+      summary: Returns all the carts in the Database.
+      tags: 
+        - Carts
+      responses: 
+        "200":
+          description: "Carts getted succesfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Request status.
+                  payload:
+                    type: array
+                    items:
+                      $ref: '#components/schemas/Carts' 
+        "500":
+          description: "Internal server error. May be due to a failure at the Database. Check database conection."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Request status.
+    post: #createCart
+      summary: Creates cart in the Database.
+      tags: 
+        - Carts
+      responses: 
+        "200":
+          description: "Cart created succesfully"
+        "500":
+          description: "Internal server error"
+  /api/carts/{cid}:
+    get: #getCartById
+      summary: Returns a single cart based on the cart's ID.
+      tags: 
+        - Carts
+      parameters: 
+      - name: cid
+        in: path
+        required: true
+        description: Cart's DB ID (needed to find cart in DB)
+        schema:
+            type: string
+      responses: 
+        "200":
+          description: "Cart getted succesfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Request status.
+                  payload:
+                    type: object
+                    $ref: '#components/schemas/Carts' 
+        "400":
+          description: "The cart was not found"
+        "500":
+          description: "Internal server error. May be due to a failure at the Database. Check database conection."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Request status.      
+    delete: #deleteCartById
+      summary: Deletes a cart by it's ID
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: "Cart's DB ID (needed to find cart in DB)"
+        schema:
+            type: string
+      responses:
+        "200":
+          description: "Cart deleted"
+        "500":
+          description: "Internal server error"
+  /api/carts/{cid}/products/{pid}:
+    post: #addToCart
+      summary: Adds a product by ID into a cart.
+      tags: 
+        - Carts
+      parameters: 
+      - name: cid
+        in: path
+        required: true
+        description: "Cart's DB ID (needed to find cart in DB)"
+        schema:
+            type: string
+            
+      - name: pid
+        in: path
+        required: true
+        description: "Product's DB ID (needed to find product in DB)"
+        schema:
+          type: string
+          
+      responses:
+        "200":
+          description: "Added to cart || Quantity modified if product was already in cart"
+        "500":
+          description: "Internal error"
+    put: #modifyProductQuantity
+      summary: Modify a product's quantity already added to cart. Both found by their DB ID.
+      tags: 
+        - Carts
+      parameters: 
+      - name: cid
+        in: path 
+        required: true
+        description: Cart's DB ID (needed to find cart in DB)
+        schema:
+            type: string
+      - name: pid
+        in: path
+        required: true
+        description: "Product's DB ID (needed to find product in DB)"
+        schema:
+          type: string
+        
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#components/schemas/requestedBodies/ModifyQuantity'
+      responses:
+        "200":
+          description: "Quantity modified || Product removed from cart if quantity substraction is equal to 0"
+        "500":
+          description: "Internal server error"
+    delete: #deleteFromCart PENDIENTE
+      summary: Deletes a certain product from cart. Both cart and product are found through their DB ID
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        required: true
+        in: path
+        description: "Cart's DB ID (needed to find cart in DB)"
+        schema:
+          type: string
+      - name: pid
+        required: true
+        in: path
+        description: "Product's DB Id (needed to find product in DB)"
+        schema:
+          type: string
+      responses:
+        "200":
+          description: "Removed from cart"
+        "500":
+          description: "Internal server error"
+  /api/carts/:cid/purchase:
+    post: 
+      summary: Checks stock availabilty and then updates the products that were bought. Returns a ticket with purchase and also unavailable products.
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: "Cart's DB ID (needed to find cart in DB)"
+        schema:
+          type: string
+      responses:
+        "200":
+          description: "The purchase was succesful"
+        "500":
+          description: "Internal server error"
+
+components: 
+  schemas:
+    Carts:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: Self generated ID by Database (it's returned in a string format, but it's datatype is actually an ObjectId)
+        products: 
+          type: array
+          description: Array of products
+          $ref: '#components/schemas/CartProduct'
+        created_at: 
+          type: string
+          description: Date Object. Automatically created by DB. It has no use.
+        updated_at: 
+          type: string
+          description: Date object. Automatically created by DB. It has no use.
+    CartProduct: 
+      type: object
+      properties:
+        product:
+          type: string
+          description: DB unique ID of the product extracted from the Products collection.
+        quantity:
+          type: number
+          description: Amount of products that User wants to buy
+        _id:
+          type: string
+          description: Automatically created by DB. It has no use.
+    requestedBodies:
+      ModifyQuantity:
+        properties:
+          quantity: 
+            description: Amount user wants to add to the already set quantity
+            type: number
+        example:
+          quantity: 3
