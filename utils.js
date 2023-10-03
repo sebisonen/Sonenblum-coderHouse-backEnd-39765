@@ -4,7 +4,8 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import passport from 'passport';
 import config from './src/config.js';
-
+import Handlebars from 'handlebars'
+import fs from 'fs'
 export const generateToken =(user)=>{
     const token = jwt.sign(user, config.app.JWT_SECRET,{expiresIn:'24h'})
     return token
@@ -52,5 +53,10 @@ export const cookieExtractor = (req) =>{
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
+export const generateMailTemplate = async(template, payload)=>{
+    const content = await fs.promises.readFile(`${__dirname}/src/templates/${template}.handlebars`, 'utf-8')
+    const precompiledContent =  Handlebars.compile(content)
+    const compiledContent = precompiledContent({...payload})
+    return compiledContent
+}
 export default __dirname;

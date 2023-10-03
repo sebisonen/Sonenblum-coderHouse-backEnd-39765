@@ -11,6 +11,7 @@ import config from '../config.js'
 //Repositories
 import { usersRepository } from '../services/index.js'
 import { cartsRepository } from '../services/index.js'
+import {loginDTO} from '../dto/users/usersDTO.js'
 //DTO
 
 const localStrategy = local.Strategy
@@ -45,13 +46,8 @@ const initializePassport=()=>{
             return done(null, result)
          }
          //B. Existe? Lo mando
-         user = {
-            id: user._id,
-            name: user.first_name,
-            email: user.email,
-            role: user.role,
-            cartId: user.cartId
-         }
+
+         user = loginDTO.getFrom(user)
          return done(null,user)
       } catch (error) {
          done(error)
@@ -96,22 +92,14 @@ const initializePassport=()=>{
              return done(null, user, {status:"success", message: "ADMIN in"})
          }
       //1. busco al usuario, ¿existe?
-         
-         
          user = await usersRepository.getUserByEmail(email)
          if(!user) return done(null,false,({message: "Usuario o contraseña incorrectos"}))
       //2.Verifico contraseña encriptada (si es que ya existe el user)
          const isPasswordValid = await validatePassword(password, user.password)
          if(!isPasswordValid) return done(null,false,({message: "Usuario o contraseña incorrectos"})) 
       //3. Creo el usuario
-         user = {
-            id: user._id,
-            name: `${user.first_name} ${user.last_name}`,
-            email: user.email,
-            role: user.role,
-            cartId: user.cartId
-         }
-         
+         user= loginDTO.getFrom(user)
+      //4.Lo mando
          return done(null,user)
          } catch (error) {
             done(error)

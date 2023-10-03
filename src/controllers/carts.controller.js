@@ -2,6 +2,8 @@ import EErrors from '../constants/EErrors.js'
 import { cartsErrorOutOfStock } from '../constants/cartsErrors.js'
 import ErrorService from '../services/ErrorService.js'
 import { cartsRepository, ticketsRepository, productsRepository } from '../services/index.js'
+import MailingService from "../services/MailingService.js"
+import TemplatesDict from '../constants/dictionaries/TemplatesDict.js'
 
 export const getCarts = async(req,res)=>{//Traigo todo los carts
     try {
@@ -44,6 +46,8 @@ export const createCart = async (req, res)=>{//Creo un nuevo cart para un usuari
 export const addToCart = async (req, res)=>{
     try {
         // Variables: Id´s, cart, y bool
+        const quantity = Number(req.body.quantity)
+        
         const cartId = String(req.params.cid)
         const productId = String(req.params.pid)
         const wasInCart = await cartsRepository.isProductInCart(cartId, productId)
@@ -61,8 +65,8 @@ export const addToCart = async (req, res)=>{
         
         // Operations
         wasInCart?
-            await cartsRepository.modifyQuantity(cartId, productId, 1):
-            await cartsRepository.addToCart(cartId, productId)
+            await cartsRepository.modifyQuantity(cartId, productId, quantity):
+            await cartsRepository.addToCart(cartId, productId, quantity)
 
         // RES data
         const cart = await cartsRepository.getCartById(cartId)
@@ -83,9 +87,8 @@ export const modifyProductQuantity =async (req, res)=>{
         let cartElement = cart.products.find(el=>el.product._id.toString()===productId)
         
         // Validation criteria
-        const moreThanStock = cartElement.quantity + quantityToSum > cartElement.product.stock
-        const lessThanZero= cartElement.quantity + quantityToSum <= 0
-        
+        const moreThanStock = quantityToSum > cartElement.product.stock
+        const lessThanZero= quantityToSum <= 0
         // Operations
         let modify
         if(moreThanStock||lessThanZero){
@@ -132,8 +135,11 @@ export const deleteFromCart = async(req,res)=>{//Dentro de un cart elimino un pr
         const cartId = String(req.params.cid)
         const productId = String(req.params.pid)            
         const deleted = await cartsRepository.deleteFromCart(cartId, productId)
+        
         req.logger.info(JSON.stringify(deleted))
-        res.sendSuccess("Removed from cart")
+        deleted?
+        res.sendSuccess("Removed from cart"):
+        req.sendError("Couldn't be removed")
     } catch (error) {
         req.logger.error(`${req.method} at  ${req.originalUrl} - ${new Date().toLocaleString()} by user ${req.user?req.user.name:"public."}.\n Error: ${error}`)
         res.sendServerError()
@@ -144,21 +150,24 @@ export const purchase = async(req,res)=>{
     try {
         //Cart
         const cartId = req.params.cid
-        const cart = await cartsRepository.getCartById(cartId)
+        let cart = await cartsRepository.getCartById(cartId)
         
         //Products from BBDD
         const storeProducts = await productsRepository.getProducts()
         let productsToUpdate = []
         let unavailableProducts = []
-
+        let nonExistentProducts= []
         //Ticket
         let amount = 0
+        
     //Operaciones
         //1. Chequeo stock, devuelvo los productos a actualizar y los que no se pudieron comprar
         cart.products.map((cartProduct)=>{
-            const storeProduct = storeProducts.find(product=>product._id.toHexString()==cartProduct.product._id.toHexString())
-            const stockAvailability =storeProduct.stock>=cartProduct.quantity
-            if (stockAvailability){
+            const storeProduct = storeProducts.find(product=>product._id.toHexString()==cartProduct.product?._id.toHexString())
+            const stockAvailability =storeProduct?.stock>=cartProduct.quantity
+
+            if(stockAvailability&&storeProduct){//En el caso en que el producto existe y hay stock
+
                 amount += cartProduct.product.price*cartProduct.quantity
                 productsToUpdate.push(
                     {
@@ -166,24 +175,39 @@ export const purchase = async(req,res)=>{
                         stock: storeProduct.stock-cartProduct.quantity
                     }
                 ) 
-            }else{
-                unavailableProducts.push(cartProduct.product._id)
+            }else if(!stockAvailability&&storeProduct){//El producto existe pero no hay stock
+                unavailableProducts.push(cartProduct.product?._id)
+            }else{//El producto no está siendo encontrado en la bbdd 
+                //Esto solo deberia pasar si se elimina directo desde compass, 
+                //Ya que desde el endpoint cuando se borra un prod se elimina de todos los carritos
+                nonExistentProducts.push(cartProduct)
             }
         })
+    
         //2. Creo el ticket
         const ticket = {
             amount: amount,
             purchaser: req.user.email,
-            cart: req.params.cid
+            cart: await cartsRepository.getCartById(req.params.cid)
         }
         const create= await ticketsRepository.createTicket(ticket)
 
-        //3. Hago update de stock en la BBDD y vacio el cart
+        //3. Mando mail con la compra efectiva
+        cart = await cartsRepository.getCartById(req.params.cid)
+        const mailingService = new MailingService()
+        const result = await mailingService.sendMail(req.user.email, TemplatesDict.PURCHASE, {
+            amount: amount,
+            purchaser: req.user.name,
+            products: cart.products,
+            ticket_id: create.id
+        })
+
+        //4. Hago update de stock en la BBDD y vacio el cart
         productsToUpdate.forEach(async (product)=>{
             const update = await productsRepository.updateProduct(product._id, {stock: product.stock})
             const cleanCart = await cartsRepository.deleteFromCart(cartId, product._id )
         })
-        res.send({message: "ticket-endpoint", payload: ticket, unavailableProducts})
+        res.sendSuccessWithPayload({ticket, unavailableProducts})
     } catch (error) {
         req.logger.error(`${req.method} at  ${req.originalUrl} - ${new Date().toLocaleString()} by user ${req.user?req.user.name:"public."}.\n Error: ${error}`)
         res.sendError(error.message)

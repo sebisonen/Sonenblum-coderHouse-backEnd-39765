@@ -1,0 +1,16 @@
+<div>
+    <h1>Acá está su falso ticket de compra</h1>
+    {{#each products}}
+            <div id="card-{{this.product._id}}" class="product-card">
+                <h3 >{{this.product.title}}</h3>
+                <div>Cantidad: {{this.quantity}}</div>
+                <div>${{this.product.price}} cada uno</div>
+                <br>
+            </div>
+            <br>
+    {{/each}}
+    
+    <h2>El total es de ${{amount}} imaginarios</h2>
+    <h3>Número de orden ficticio: {{ticket_id}}</h3>
+    <p>Gracias por no comprar en este ecommerce falso</p>
+</div>

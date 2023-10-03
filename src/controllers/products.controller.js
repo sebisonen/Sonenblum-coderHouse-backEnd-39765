@@ -1,7 +1,7 @@
 import EErrors  from "../constants/EErrors.js";
 import { productsErrorIncompleteValues } from "../constants/productsErrors.js";
 import ErrorService from "../services/ErrorService.js";
-import { productsRepository } from "../services/index.js";
+import { cartsRepository, productsRepository } from "../services/index.js";
 
 export const getProducts = async (req,res)=>{
     try {
@@ -71,8 +71,14 @@ export const modifyProductById = async (req, res) =>{
 }
 export const deleteProductById = async (req, res) =>{
     try {
-      const id=String(req.params.pid)
-      const deleted= await productsRepository.deleteProduct(id)
+      const pid=String(req.params.pid)
+      //1.Borro el producto
+      const deleted= await productsRepository.deleteProduct(pid)
+      //2.Borro ese producto de cada cart
+      const carts = await cartsRepository.getCarts()
+      carts.forEach(async cart=>{
+        await cartsRepository.deleteFromCart(cart._id, pid)
+      })
       req.logger.info(JSON.stringify(deleted))
       deleted?
       res.sendSuccess("Product deleted succesfully"):

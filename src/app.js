@@ -20,7 +20,7 @@ import errorHandler from './middlewares/error.js'
 //Swagger
 import swaggerJSDoc from 'swagger-jsdoc'
 import swaggerUiExpress from 'swagger-ui-express'
-    
+
 
 // CONFIG
 // Server
@@ -56,6 +56,8 @@ const swaggerOptions ={
 const specifications = swaggerJSDoc(swaggerOptions);
 
 app.use('/docs',swaggerUiExpress.serve, swaggerUiExpress.setup(specifications));
+
+
 
 //Passport
 initializePassport()

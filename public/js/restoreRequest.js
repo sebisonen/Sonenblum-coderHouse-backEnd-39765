@@ -1,4 +1,5 @@
-const form = document.getElementById('loginForm');
+const form = document.getElementById('restoreRequestForm');
+const messageDiv = document.getElementById('message'); 
 form.addEventListener('submit',async (event)=>{
     event.preventDefault();
     const data = new FormData(form)
@@ -7,7 +8,7 @@ form.addEventListener('submit',async (event)=>{
         obj[key]=value
     )
     
-    const response = await fetch('/api/sessions/login',{ 
+    const response = await fetch('/api/sessions/restoreRequest',{ 
         method: "POST",
         body: JSON.stringify(obj),
         headers:{
@@ -17,8 +18,12 @@ form.addEventListener('submit',async (event)=>{
     const responseData = await response.json()
     
     if (responseData.status=="success"){
-        window.location.replace('/products')
+        
+        messageDiv.innerText= "Se ha enviado un correo de verificacion"
+        setTimeout(() => {
+            window.location.replace('/login')
+        }, 2000);
+    }else{
+        messageDiv.innerText =responseData.message
     }
-    
-
 })

@@ -40,5 +40,8 @@ export default class SessionsRouter extends BaseRouter{
             passportCall('github', {strategyType:"github"}),
             sessionsController.githubLogin
             )
+        //Recuperar contraseña
+        this.post('/restoreRequest', ["NOT_AUTH"], sessionsController.restoreRequest)
+        this.post('/restorePassword', ["NOT_AUTH"], sessionsController.restorePassword)
     }
 }

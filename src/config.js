@@ -17,11 +17,15 @@ export default {
             EMAIL: process.env.ADMIN_EMAIL,
             PASSWORD: process.env.ADMIN_PASSWORD
         },
-        JWT_SECRET: process.env.JWT_SECRET
+        JWT_SECRET: process.env.JWT_SECRET,
         
     },
     mongoDB: {
         URL: process.env.MONGO_URL
+    },
+    mailer:{
+        EMAIL: process.env.MAILER_EMAIL,
+        PASSWORD: process.env.MAILER_PASSWORD
     },
     env: program.opts().mode==="dev"? "dev":"prod"
 }

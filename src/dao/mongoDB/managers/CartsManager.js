@@ -4,7 +4,9 @@ export default class CartsManager{
     getCarts = () => cartsModel.find().lean()
     getCartById = (id) => cartsModel.findOne({_id: id}).populate('products.product').lean()
     createCart = (cart) => cartsModel.create(cart)
-    addToCart = (cartId, productId)=> cartsModel.updateOne({_id: cartId},{$push: {products:{product: productId, quantity: 1}}})
+    addToCart = (cartId, productId, quantity)=> {
+        return cartsModel.updateOne({_id: cartId},{$push: {products:{product: productId, quantity: quantity}}})
+    }
     // New methods
     isProductInCart= async (cartId,productId)=>{
         let cart= await this.getCartById(cartId)
@@ -13,7 +15,7 @@ export default class CartsManager{
     }
     deleteCart = (cartId) => cartsModel.findByIdAndDelete(cartId)
     deleteFromCart = (cartId, productId)=> cartsModel.updateOne({_id: cartId}, {$pull: {products:{product: {_id: productId}}}})
-    modifyQuantity = (cartId, productId, quantity) => cartsModel.updateOne({_id:cartId,"products.product":productId}, {$inc:{"products.$.quantity":quantity}})
+    modifyQuantity = (cartId, productId, quantity) => cartsModel.updateOne({_id:cartId,"products.product":productId}, {$set:{"products.$.quantity":quantity}})
 }
 
 

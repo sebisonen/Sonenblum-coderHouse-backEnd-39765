@@ -3,6 +3,7 @@
     <a href="/login"><button id="logout-btn" type="submit" >LOGIN</button></a>
     <a href="/login"><img id="cart-icon" src="/img/cartIcon.svg" alt=""></a> 
 {{/unless}}
+
 {{#if user}}
         <form action="/api/sessions/logout" method="post">
             <button id="logout-btn" type="submit">LOGOUT</button>
@@ -20,21 +21,13 @@
             <h2 style="color:whitesmoke">Hola, {{user.name}}</h2>
             <p style="color:whitesmoke">Correo: {{user.email}}</p>
             <p style="color:whitesmoke">Rol: {{user.role}}</p>
-         </div>
-         
-           
+         </div>           
 {{/if}}
 
-
-           
-       
 <div id="productsCatalogue">
     
-    
 {{#each products}}
-
-
-<div id="{{this._id}}"  class="container">
+<div id="{{this._id}}-container"  class="container">
     <div class="details">
         <div class="content">
             <h2>{{this.title}} <br>
@@ -44,23 +37,19 @@
             </p>
             <h3>${{this.price}}</h3>
             <br>
+            
             <div style="display:block">
                 <button id="{{this._id}}-decreaseBtn"class="decrease-quantity-button">-</button>
-                <div max="{{this.stock}}" id="{{this._id}}-quantity">1</div>
+                <div max="{{this.stock}}" id="quantity-{{this._id}}-{{../user.cartId}}" class="quantity-div">1</div>
                 <button id="{{this._id}}-increaseBtn" class="increase-quantity-button">+</button>
             </div>
-            <form method="POST" action="api/carts/{{../user.cartId}}/products/{{this._id}}">
-            <button id="addToCartBtn" href="" type="submit" >Add to cart</button>
-            </form>
-            
-            
-            
+            <form id="{{this._id}}" class="addToCartForm" method="post">
+                <button  id="{{../user.cartId}}-addBtn" class="addToCartBtn" href="" type="submit" >Add to cart</button>
+            </form>    
         </div>
     </div>
 </div>
 {{/each}}
-
-     
 </div>
 <div id="paginatorDiv" >
     {{#if hasPrevPage}}
@@ -70,7 +59,6 @@
         {{#if hasNextPage}}
             <a href="/products?page={{nextPage}}&limit={{limit}}{{queryUrl}}"><button style="backgroundColor:white">Siguiente</button></a>
         {{/if}}
-
 </div>
    
 <script src="/js/products.js"></script>

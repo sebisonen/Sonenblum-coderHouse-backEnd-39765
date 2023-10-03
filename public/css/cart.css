@@ -5,8 +5,8 @@ body {
     padding: 10%;
     min-height: 100vh;
     font-family: 'Poppins', sans-serif;
-    background: #000;
-    color: #fff;
+    background: #141414;
+    color: #eeecec;
 }
 #cart-container{
         display: flex;
@@ -24,7 +24,7 @@ body {
 
 }
 
-#purchase-btn{
+.purchase-btn{
     background-image: linear-gradient(to right, #fd5c47 0%, #ee672d  51%, #af0c0c  100%);
     margin: 10px;
     padding: 15px 45px;
@@ -36,4 +36,14 @@ body {
     border-radius: 10px;
     border-style: none;
     align-self: flex-end;
+}
+
+
+.delete-btn{
+    height: 1rem;
+    width: 1rem;
+    padding: 0.2rem
+}
+.delete-btn:hover{
+    border-bottom: 0.5px solid #444
 }

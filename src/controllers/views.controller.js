@@ -5,6 +5,7 @@ export const productsView = async (req,res) =>{
     try {
         const{page=1, limit=10, sort,...queries}=req.query
         const user = req.user
+        
     // Creo un tamplate de URL para mandar a handlebars y lograr que la query persista con el paginate (en el reload se perdía)
         let queryUrl=""
         for (let key in queries){
@@ -21,7 +22,7 @@ export const productsView = async (req,res) =>{
     // Renders
         rest.totalDocs==0||page>rest.totalPages?
         res.render('error', {css: 'error'}):
-        res.render('products', {user: req.user, products, queryUrl, page: rest.page, hasPrevPage, hasNextPage, prevPage,nextPage,limit, css:'home'})
+        res.render('products', {user, products,  queryUrl, page: rest.page, hasPrevPage, hasNextPage, prevPage,nextPage,limit, css:'home'})
     } catch (error) {
         res.render('error')
     }
@@ -55,4 +56,19 @@ export const loginView = (req,res)=>{
         res.render('error')
     }
     
+}
+
+export const restoreRequest = (req, res)=>{
+    try {
+        res.render('restoreRequest', {css:'register'})
+    } catch (error) {
+        res.render('error')
+    }
+}
+export const restorePassword =(req,res)=>{
+    try {
+        res.render('restorePassword', {css:'register'})
+    } catch (error) {
+        res.redner('error')
+    }
 }

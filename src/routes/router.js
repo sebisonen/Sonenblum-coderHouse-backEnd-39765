@@ -55,7 +55,9 @@ import attachLogger from "../middlewares/logger.js"
             res.sendSuccessWithPayload = payload =>res.status(200).send({status: "success", payload})
             res.sendError= message=>res.status(400).send({status: "error", message})
             res.sendServerError = error=> res.status(500).send({status:"error", message:"Internal server error.", error})
+            res.sendBadRequest = error=> res.status(400).send({status:"error", error, message: error?.message})
             res.sendUnauthorized= error=>res.status(401).send({status:"error", error})
+            res.sendForbidden = error => res.status(403).send({status:"error", error})
             next()
         }
        handlePolicies=policies=>{

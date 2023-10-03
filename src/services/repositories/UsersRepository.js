@@ -8,4 +8,7 @@ export default class UsersRepository{
     createUser =(newUser)=>{
         return this.dao.createUser(newUser)
     }
+    update = (id,user) =>{
+        return this.dao.updateUser(id,user);
+    }
 }

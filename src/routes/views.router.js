@@ -11,6 +11,8 @@ export default class ViewsRouter extends BaseRouter{
         this.get('/',["PUBLIC","USER","ADMIN"],(req,res)=>{
             res.redirect('/products')
         })//Si alguien entra por primera vez te lleve a products.
+        this.get('/restoreRequest', ["NOT_AUTH"], viewsController.restoreRequest)
+        this.get('/restorePassword', ["NOT_AUTH"], viewsController.restorePassword)
     }
 }
 
