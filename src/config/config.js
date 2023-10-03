@@ -27,5 +27,10 @@ export default {
         EMAIL: process.env.MAILER_EMAIL,
         PASSWORD: process.env.MAILER_PASSWORD
     },
+    github:{
+        ClientID: process.env.GITHUB_ClientID,
+        ClientSecret: process.env.GITHUB_ClientSecret,
+        CallbackURL: process.env.GITHUB_CallbackURL
+    },
     env: program.opts().mode==="dev"? "dev":"prod"
 }
