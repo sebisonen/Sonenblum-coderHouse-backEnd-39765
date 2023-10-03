@@ -8,7 +8,6 @@ const messageDiv = document.querySelector('#message')
 buyBtn.addEventListener('click', async (e)=>{
     e.preventDefault()
     const cid = e.target.id.split('-')[1]
-    console.log(cid)
     const url = `/api/carts/${cid}/purchase`
     const response = await fetch(url,
         { 
