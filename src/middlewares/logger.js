@@ -1,6 +1,6 @@
 //En logger.js
 import LoggerService from "../services/LoggerService.js"
-import config from "../config.js"
+import config from "../config/config.js"
 
 const loggerService = new LoggerService(config.env)
 

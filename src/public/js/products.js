@@ -71,7 +71,10 @@ addToCartForms.forEach(form => {
             }
         ).then(res=>res.json())
         .then(res=>{
-            e.submitter.innerText = "Added to cart"    
+            console.log(res)
+            res.status=="Success"?
+            e.submitter.innerText = res.message:
+            e.submitter.innerText = "Couldn't be added to cart"  
         })
           
     })

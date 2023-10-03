@@ -12,9 +12,9 @@ import ViewsRouter from './routes/views.router.js'
 //Simple router
 import MockRouter from './routes/mock.router.js'
 //Utils
-import __dirname from '../utils.js'
+import __dirname from './utils.js'
 //env
-import config from './config.js';
+import config from './config/config.js';
 //Middlewares
 import errorHandler from './middlewares/error.js'
 //Swagger
@@ -51,7 +51,7 @@ const swaggerOptions ={
             description: "Documentation for the main API of this project"
         }
     },
-    apis:[`${__dirname}/src/documentation/**/*.yaml`]
+    apis:[`${__dirname}/documentation/**/*.yaml`]
 }
 const specifications = swaggerJSDoc(swaggerOptions);
 

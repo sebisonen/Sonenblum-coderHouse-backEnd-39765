@@ -4,10 +4,10 @@ import local from 'passport-local'
 import GithubStrategy from 'passport-github2'
 import { Strategy, ExtractJwt } from 'passport-jwt'
 //Utils
-import { createHash,validatePassword } from '../../utils.js'
-import { cookieExtractor } from '../../utils.js'
+import { createHash,validatePassword } from '../utils.js'
+import { cookieExtractor } from '../utils.js'
 //ENV
-import config from '../config.js'
+import config from './config.js'
 //Repositories
 import { usersRepository } from '../services/index.js'
 import { cartsRepository } from '../services/index.js'

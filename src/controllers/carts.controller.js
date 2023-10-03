@@ -71,7 +71,7 @@ export const addToCart = async (req, res)=>{
         // RES data
         const cart = await cartsRepository.getCartById(cartId)
 
-        res.status(200).send({status: "Success", message: wasInCart?"One more product was added":"Added to cart", cart}) 
+        res.status(200).send({status: "Success", message: "Added to cart", cart}) 
     } catch (error) {
         req.logger.error(`${req.method} at  ${req.originalUrl} - ${new Date().toLocaleString()} by user ${req.user?req.user.name:"public."}.\n Error: ${error}`)
         res.send({status:"error", error: error.message})

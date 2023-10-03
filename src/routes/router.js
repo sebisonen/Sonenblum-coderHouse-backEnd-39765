@@ -1,5 +1,5 @@
 import {Router} from "express"
-import {passportCall} from '../../utils.js'
+import {passportCall} from '../utils.js'
 import attachLogger from "../middlewares/logger.js"
     export default class BaseRouter{
         constructor(){

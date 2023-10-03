@@ -1,8 +1,8 @@
 //ESTO TODAVIA NO TIENE IMPLEMENTACION
-import config from "../config.js"
+import config from "../config/config.js"
 import nodemailer from 'nodemailer'
 import MailingDict from "../constants/dictionaries/MailingDict.js"
-import { generateMailTemplate } from "../../utils.js"
+import { generateMailTemplate } from "../utils.js"
 
 export default class MailingService {
     constructor (){

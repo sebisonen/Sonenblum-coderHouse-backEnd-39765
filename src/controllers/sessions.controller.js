@@ -1,12 +1,12 @@
 //Utils
 import jwt from 'jsonwebtoken'
-import { createHash, generateToken, validatePassword } from "../../utils.js"
+import { createHash, generateToken, validatePassword } from "../utils.js"
 import TemplatesDict from "../constants/dictionaries/TemplatesDict.js"
 import RestoreTokenDTO from "../dto/users/restoreTokenDTO.js"
 import { loginDTO, registerDTO } from "../dto/users/usersDTO.js"
 import { usersRepository } from "../services/index.js"
 import MailingService from "../services/MailingService.js"
-import config from '../config.js'
+import config from '../config/config.js'
 
 
 export const register = async (req,res)=>{
